@@ -128,3 +128,53 @@ def test_history_merged_across_meters(snap) -> None:
         "2026-10-28", "2026-09-28", "2025-12-30", "2025-11-28",
     ]
     assert loc.yearly_consumption() == {"2026": 27, "2025": 14}
+
+
+def test_invoice_details_and_prices(loc) -> None:
+    assert [d.number for d in loc.invoice_details] == ["VRS000000003", "VRS000000002"]
+    latest = loc.latest_invoice_detail
+    assert latest.period_end == date(2026, 10, 28)
+    assert latest.month == "2026-10"
+    assert latest.water_billed == 14.89
+    assert latest.tariff("apa") == 7.26
+    assert latest.tariff("canalizare") == 10.48
+    assert latest.tariff("necunoscut") is None
+    assert latest.price_per_m3 == 17.36
+    assert latest.own_consumption == 11.0
+    assert latest.effective_cost_per_m3 == 23.5
+    assert latest.billed_difference == 3.89
+
+
+def test_meter_readings_are_dynamic(loc) -> None:
+    readings = loc.meter_readings()
+    assert list(readings) == ["22AA000001", "I23AA000009"]
+    condo = readings["I23AA000009"]
+    assert (condo.kind, condo.consumption, condo.index_new, condo.date) == (
+        "condominiu", 102.0, 3355.0, date(2026, 10, 28))
+    assert loc.meter_monthly("I23AA000009") == {"2026-09": 100.0, "2026-10": 102.0}
+    assert loc.billed_monthly() == {"2026-09": 13.0, "2026-10": 14.89}
+    assert loc.price_monthly() == {"2026-09": 17.36, "2026-10": 17.36}
+
+
+def test_invoice_assigned_by_meter_when_account_has_several_locations(snap) -> None:
+    acc = snap["accounts"]["10000001"]
+    acc["locations"].append({
+        "ConsumptionClientAddress": "STR. ALTA 3", "ConsumptionInstallation": "5000000003",
+        "ConsumptionMeters": ["22ZZ000003"], "ConsumptionPointCode": "4000000003",
+    })
+    locs = build_locations(snap)
+    assert len(locs["4000000001"].invoice_details) == 2
+    assert locs["4000000003"].invoice_details == []
+    assert locs["4000000003"].meter_readings() == {}
+
+
+def test_single_location_gets_invoices_even_if_meter_not_listed(snap) -> None:
+    snap["accounts"]["10000001"]["locations"][0]["ConsumptionMeters"] = ["ALT0000001"]
+    loc = build_locations(snap)["4000000001"]
+    assert len(loc.invoice_details) == 2
+
+
+def test_location_without_invoice_details(empty) -> None:
+    assert empty.latest_invoice_detail is None
+    assert empty.meter_readings() == {}
+    assert empty.price_monthly() == {}

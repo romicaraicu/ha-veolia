@@ -150,3 +150,77 @@ views:
               {% else %}
               - —
               {% endfor %}
+
+      # ------------------------------------------------------------ PREȚ ȘI CONTOARE (din facturi)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Preț și contoare
+            icon: mdi:cash
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_pret_mc_facturat
+            name: Preț pe m³ facturat
+            color: indigo
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_cost_efectiv_mc
+            name: Cost efectiv pe m³
+            color: purple
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_tarif_apa
+            name: Tarif apă (fără TVA)
+            color: cyan
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_tarif_canalizare
+            name: Tarif canalizare (fără TVA)
+            color: brown
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_apa_facturata
+            name: Apă facturată
+            color: light-blue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_diferenta_facturata
+            name: Facturat peste contor
+            color: amber
+            grid_options:
+              columns: 6
+          - type: statistics-graph
+            title: Preț pe m³ (lei, cu TVA)
+            entities:
+              - veolia_vrsi:pret_mc_4000000000
+            stat_types:
+              - mean
+            chart_type: line
+            period: month
+            days_to_show: 730
+            hide_legend: true
+          - type: statistics-graph
+            title: Contor propriu vs. apă facturată (m³)
+            entities:
+              - veolia_vrsi:consum_apa_4000000000
+              - veolia_vrsi:apa_facturata_4000000000
+            stat_types:
+              - change
+            chart_type: bar
+            period: month
+            days_to_show: 365
+          - type: markdown
+            content: |-
+              **Contoare de pe ultima factură**
+              {% set prefix = 'sensor.veolia_vrsi_4000000000_contor_' %}
+              {% for s in states.sensor if s.entity_id.startswith(prefix) and s.entity_id.endswith('_consum') %}
+              - **{{ s.attributes.serie }}** ({{ s.attributes.tip }}): {{ s.state }} m³ · index {{ s.attributes.index_nou }} · {{ s.attributes.data }}
+              {% else %}
+              - contoarele apar după ce add-on-ul citește primele facturi
+              {% endfor %}
+
+              Graficul unui contor: card *Statistics graph* cu statistica `veolia_vrsi:contor_<serie>`.

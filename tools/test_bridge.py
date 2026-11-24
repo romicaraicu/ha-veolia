@@ -47,17 +47,29 @@ def summarize(snap: dict, seconds: float) -> None:
         print(f"    facturi neplătite: {len(acc.get('unpaid_invoices', []))}")
         print(f"    facturi plătite: {len(acc.get('paid_invoices', []))}")
         print(f"    plăți: {len(acc.get('payments', []))}")
+        details = [d for d in (acc.get("invoice_details") or {}).values() if not d.get("parse_error")]
+        print(f"    facturi citite din PDF: {len(details)}")
+        for d in sorted(details, key=lambda d: d.get("period_end") or "", reverse=True)[:1]:
+            apa = (d.get("services") or {}).get("apa") or {}
+            print(f"      ultima: perioada {d.get('period_start')} → {d.get('period_end')}, "
+                  f"apă facturată {apa.get('quantity')} m³, tarif apă {apa.get('tariff')} lei/m³")
+            for m in d.get("meters") or []:
+                print(f"      contor ({m.get('kind')}): consum {m.get('consumption')} m³")
         print(f"    total de plată: {acc.get('total_to_pay')}")
 
 
 async def run_local() -> None:
+    import tempfile
+
     from veolia_bridge.app.browser import PlaywrightPortal
     from veolia_bridge.app.errors import PortalError
+    from veolia_bridge.app.invoices import InvoiceCache
 
     email, password = _credentials()
     started = time.monotonic()
     try:
-        snap = await PlaywrightPortal().snapshot(email, password)
+        cache = InvoiceCache(Path(tempfile.mkdtemp()) / "invoices.json")
+        snap = await PlaywrightPortal(invoice_cache=cache).snapshot(email, password)
     except PortalError as err:
         print(f"EROARE {err.code}: {err.message}")
         sys.exit(1)

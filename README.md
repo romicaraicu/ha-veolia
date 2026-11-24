@@ -28,6 +28,9 @@ Dacă ai contract de apă cu Veolia România Soluții Integrate și folosești H
 | **Ce am plătit deja?** | `Facturi plătite` (ultimele 12 luni, plus totaluri pe ani) și `Ultima plată` |
 | **Când pot transmite indexul?** | `Perioadă transmitere index` + senzorul `Transmitere index permisă` |
 | **Ce date are locul de consum?** | `Loc de consum`: adresă, cod client, contract, contor |
+| **Cât plătesc pe m³?** | `Preț pe m³ facturat`, `Cost efectiv pe m³`, `Tarif apă`, `Tarif canalizare` (din PDF-ul facturii) |
+| **Cât arată fiecare contor?** | câte un `Consum contor …` și `Index contor …` pentru fiecare contor de pe factură (al tău, condominiu și altele) |
+| **Plătesc mai multă apă decât arată contorul meu?** | `Apă facturată` și `Diferență facturată față de contor` |
 
 Pe lângă senzori ai:
 - un buton **Actualizare date**;
@@ -91,6 +94,7 @@ Pașii detaliați sunt în **[docs/instalare.md](docs/instalare.md)**.
 
 - Consumul e **lunar**, așa cum îl citește și îl facturează Veolia. Perioadele de citire nu coincid cu lunile calendaristice (de exemplu 29 sep – 28 oct); în grafice, fiecare perioadă apare la luna în care se termină.
 - **Contoarele smart** sunt citite de la distanță. Pentru ele portalul nu permite transmiterea indexului, iar `Transmitere index permisă` rămâne `off`.
+- Prețul pe m³ și contoarele vin din PDF-ul facturilor. Add-on-ul descarcă fiecare factură o singură dată, câte cel mult 6 la o actualizare, deci istoricul complet se adună în câteva actualizări. PDF-urile nu se salvează.
 - Datele se reîmprospătează la 6 ore (configurabil între 2 și 24).
 - Parola stă doar în configurația integrării, ca la orice altă integrare Home Assistant. Add-on-ul o primește la fiecare cerere și nu o salvează.
 

@@ -1,13 +1,18 @@
 {
   "fetched_at": "2026-11-24T09:00:00+00:00",
-  "client_codes": ["10000001", "10000002"],
+  "client_codes": [
+    "10000001",
+    "10000002"
+  ],
   "accounts": {
     "10000001": {
       "locations": [
         {
           "ConsumptionClientAddress": "STR. EXEMPLU, Nr 1, Postal Code 075100, OTOPENI, OTOPENI",
           "ConsumptionInstallation": "5000000001",
-          "ConsumptionMeters": ["22AA000001"],
+          "ConsumptionMeters": [
+            "22AA000001"
+          ],
           "ConsumptionPointCode": "4000000001"
         }
       ],
@@ -21,7 +26,9 @@
           "ContractNumberWithAnb": "ANB0000001",
           "ContractStartDate": "2023-02-27",
           "Installation": "5000000001",
-          "MeterSeries": ["22AA000001"],
+          "MeterSeries": [
+            "22AA000001"
+          ],
           "Type": "Apa si canal"
         }
       ],
@@ -46,45 +53,227 @@
             "Zwnummer": "001"
           },
           "index_history": [
-            {"Consumption": 14, "EndDate": "2026-10-28", "Index": "419", "StartDate": "2026-09-29", "Type": "citire"},
-            {"Consumption": 13, "EndDate": "2026-09-28", "Index": "405", "StartDate": "2026-08-30", "Type": "citire"},
-            {"Consumption": 9, "EndDate": "2025-12-30", "Index": "300", "StartDate": "2025-12-01", "Type": "citire"}
+            {
+              "Consumption": 14,
+              "EndDate": "2026-10-28",
+              "Index": "419",
+              "StartDate": "2026-09-29",
+              "Type": "citire"
+            },
+            {
+              "Consumption": 13,
+              "EndDate": "2026-09-28",
+              "Index": "405",
+              "StartDate": "2026-08-30",
+              "Type": "citire"
+            },
+            {
+              "Consumption": 9,
+              "EndDate": "2025-12-30",
+              "Index": "300",
+              "StartDate": "2025-12-01",
+              "Type": "citire"
+            }
           ]
         }
       },
       "last_invoice": {
-        "DateIn": "2026-11-03", "Downloadable": true, "DueDate": "2026-11-18",
-        "InvoiceNumber": "VRS000000003", "LastPayDate": "0000-00-00",
-        "PayUTransactionDate": "0000-00-00", "SapStatus": "", "Sold": "258.54",
-        "SoldTotal": 258.54, "Status": "00", "Total": "258.54", "Type": "u"
+        "DateIn": "2026-11-03",
+        "Downloadable": true,
+        "DueDate": "2026-11-18",
+        "InvoiceNumber": "VRS000000003",
+        "LastPayDate": "0000-00-00",
+        "PayUTransactionDate": "0000-00-00",
+        "SapStatus": "",
+        "Sold": "258.54",
+        "SoldTotal": 258.54,
+        "Status": "00",
+        "Total": "258.54",
+        "Type": "u"
       },
       "total_to_pay": 258.54,
       "unpaid_invoices": [
         {
-          "DateIn": "2026-11-03", "Downloadable": true, "DueDate": "2026-11-18",
-          "InvoiceNumber": "VRS000000003", "LastPayDate": "0000-00-00",
-          "PayUTransactionDate": "0000-00-00", "SapStatus": "", "Sold": "258.54",
-          "SoldTotal": 258.54, "Status": "00", "Total": "258.54", "Type": "u"
+          "DateIn": "2026-11-03",
+          "Downloadable": true,
+          "DueDate": "2026-11-18",
+          "InvoiceNumber": "VRS000000003",
+          "LastPayDate": "0000-00-00",
+          "PayUTransactionDate": "0000-00-00",
+          "SapStatus": "",
+          "Sold": "258.54",
+          "SoldTotal": 258.54,
+          "Status": "00",
+          "Total": "258.54",
+          "Type": "u"
         }
       ],
       "paid_invoices": [
         {
-          "DateIn": "2026-10-06", "Downloadable": true, "DueDate": "2026-10-21",
-          "InvoiceNumber": "VRS000000002", "LastPayDate": "2026-10-07",
-          "PayUTransactionDate": "2026-10-07", "SapStatus": "Achitata", "Sold": "0.00",
-          "SoldTotal": 0, "Status": "03", "Total": "120.00", "Type": "u"
+          "DateIn": "2026-10-06",
+          "Downloadable": true,
+          "DueDate": "2026-10-21",
+          "InvoiceNumber": "VRS000000002",
+          "LastPayDate": "2026-10-07",
+          "PayUTransactionDate": "2026-10-07",
+          "SapStatus": "Achitata",
+          "Sold": "0.00",
+          "SoldTotal": 0,
+          "Status": "03",
+          "Total": "120.00",
+          "Type": "u"
         },
         {
-          "DateIn": "2025-12-05", "Downloadable": true, "DueDate": "2025-12-20",
-          "InvoiceNumber": "VRS000000001", "LastPayDate": "2025-12-10",
-          "PayUTransactionDate": "0000-00-00", "SapStatus": "Achitata", "Sold": "0.00",
-          "SoldTotal": 0, "Status": "00", "Total": "95.10", "Type": "u"
+          "DateIn": "2025-12-05",
+          "Downloadable": true,
+          "DueDate": "2025-12-20",
+          "InvoiceNumber": "VRS000000001",
+          "LastPayDate": "2025-12-10",
+          "PayUTransactionDate": "0000-00-00",
+          "SapStatus": "Achitata",
+          "Sold": "0.00",
+          "SoldTotal": 0,
+          "Status": "00",
+          "Total": "95.10",
+          "Type": "u"
         }
       ],
       "payments": [
-        {"DocumentNumber": "900000000002", "PaidAmount": "120.00", "PaymentDate": "2026-10-07", "PaymentType": "Incasare PayU", "Sold": "0.00"},
-        {"DocumentNumber": "900000000001", "PaidAmount": "95.10", "PaymentDate": "2025-12-10", "PaymentType": "Incasari PAGO", "Sold": "0.00"}
-      ]
+        {
+          "DocumentNumber": "900000000002",
+          "PaidAmount": "120.00",
+          "PaymentDate": "2026-10-07",
+          "PaymentType": "Incasare PayU",
+          "Sold": "0.00"
+        },
+        {
+          "DocumentNumber": "900000000001",
+          "PaidAmount": "95.10",
+          "PaymentDate": "2025-12-10",
+          "PaymentType": "Incasari PAGO",
+          "Sold": "0.00"
+        }
+      ],
+      "invoice_details": {
+        "VRS000000003": {
+          "invoice_number": "VRS000000003",
+          "issued": "2026-11-03",
+          "due": "2026-11-18",
+          "period_start": "2026-09-29",
+          "period_end": "2026-10-28",
+          "meters": [
+            {
+              "serial": "22AA000001",
+              "kind": "individual",
+              "index_new": 419.0,
+              "index_old": 408.0,
+              "consumption": 11.0,
+              "method": "citire",
+              "reason": null,
+              "date": "2026-10-28"
+            },
+            {
+              "serial": "I23AA000009",
+              "kind": "condominiu",
+              "index_new": 3355.0,
+              "index_old": 3253.0,
+              "consumption": 102.0,
+              "method": "citire",
+              "reason": null,
+              "date": "2026-10-28"
+            }
+          ],
+          "services": {
+            "apa": {
+              "label": "Servicii alimentare cu apă potabilă (mc)",
+              "quantity": 14.89,
+              "tariff": 7.26,
+              "value": 108.09,
+              "vat_rate": 11.0,
+              "vat": 11.89,
+              "total": 119.98
+            },
+            "canalizare": {
+              "label": "Servicii canalizare apă uzată (mc)",
+              "quantity": 11.91,
+              "tariff": 10.48,
+              "value": 124.83,
+              "vat_rate": 11.0,
+              "vat": 13.73,
+              "total": 138.56
+            }
+          },
+          "total_without_vat": 232.92,
+          "vat": 25.62,
+          "total": 258.54,
+          "next_reading": "2026-11-26",
+          "reading_window": [
+            "2026-11-21",
+            "2026-11-25"
+          ]
+        },
+        "VRS000000002": {
+          "invoice_number": "VRS000000002",
+          "issued": "2026-10-06",
+          "due": "2026-10-21",
+          "period_start": "2026-08-29",
+          "period_end": "2026-09-28",
+          "meters": [
+            {
+              "serial": "22AA000001",
+              "kind": "individual",
+              "index_new": 408.0,
+              "index_old": 395.0,
+              "consumption": 13.0,
+              "method": "citire",
+              "reason": null,
+              "date": "2026-09-28"
+            },
+            {
+              "serial": "I23AA000009",
+              "kind": "condominiu",
+              "index_new": 3253.0,
+              "index_old": 3153.0,
+              "consumption": 100.0,
+              "method": "citire",
+              "reason": null,
+              "date": "2026-09-28"
+            }
+          ],
+          "services": {
+            "apa": {
+              "label": "Servicii alimentare cu apă potabilă (mc)",
+              "quantity": 13.0,
+              "tariff": 7.26,
+              "value": 94.38,
+              "vat_rate": 11.0,
+              "vat": 10.38,
+              "total": 104.76
+            },
+            "canalizare": {
+              "label": "Servicii canalizare apă uzată (mc)",
+              "quantity": 10.4,
+              "tariff": 10.48,
+              "value": 108.99,
+              "vat_rate": 11.0,
+              "vat": 11.99,
+              "total": 120.98
+            }
+          },
+          "total_without_vat": 203.37,
+          "vat": 22.37,
+          "total": 225.74,
+          "next_reading": "2026-10-28",
+          "reading_window": [
+            "2026-10-23",
+            "2026-10-27"
+          ]
+        },
+        "VRS000000001": {
+          "invoice_number": "VRS000000001",
+          "parse_error": "PDF stricat"
+        }
+      }
     },
     "10000002": {
       "locations": [
@@ -101,7 +290,8 @@
       "total_to_pay": null,
       "unpaid_invoices": [],
       "paid_invoices": [],
-      "payments": []
+      "payments": [],
+      "invoice_details": {}
     }
   }
 }

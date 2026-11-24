@@ -16,10 +16,17 @@ class VeoliaEntity(CoordinatorEntity[VeoliaCoordinator]):
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator: VeoliaCoordinator, code: str, key: str, platform: str) -> None:
+    def __init__(
+        self,
+        coordinator: VeoliaCoordinator,
+        code: str,
+        key: str,
+        platform: str,
+        translation_key: str | None = None,
+    ) -> None:
         super().__init__(coordinator)
         self._code = code
-        self._attr_translation_key = key
+        self._attr_translation_key = translation_key or key
         self._attr_unique_id = f"{code}_{key}"
         # Entity ID previzibil, folosit și de dashboard: <platform>.veolia_vrsi_<cod>_<cheie>
         self.entity_id = f"{platform}.{DOMAIN}_{slugify(code)}_{key}"

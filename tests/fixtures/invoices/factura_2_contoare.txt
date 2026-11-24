@@ -1,0 +1,40 @@
+VEOLIA ROMÂNIA SOLUTII INTEGRATE SA
+ FACTURĂ Nr. VAS000000002
+Data emitere: 03.11.2026
+Data scadenţă: 18.11.2026
+COD CLIENT:  10000001
+Nume client:  ION POPESCU
+Adresă: STR. EXEMPLU Nr. 1
+ SUMAR FACTURĂ
+Contravaloare servicii apă             108,09
+TVA servicii apă 11 %              11,89
+Contravaloare servicii canal             124,83
+TVA servicii canal 11 %              13,73
+Penalităţi de întârziere               0,00
+Total factură curentă (detalii pe
+verso)
+            258,54
+Cont: RO00BANK0000000000000000
+
+=====PAGE=====
+
+DETALII FACTURĂ
+Perioada de facturare: 29.09.2026 - 28.10.2026
+Detalii consum
+Număr contract: VS00000001
+Dată contract:  27.02.2023
+Adresa punctului de consum: STR. EXEMPLU Nr. 1 OTOPENI 075100
+Serie contor Index nou Index vechi Consum Stabilit prin Motiv* Data
+22AA000001 419 408 11 citire 28.10.2026
+Serie contor condominiu Index nou Index vechi Consum Stabilit prin Motiv* Data
+I23AA000009 3.355 3.253 102 citire 28.10.2026
+Servicii facturate Cantitate(mc) Tarif (lei) Valoare (lei) Cota TVA TVA (lei) Total (lei)
+Servicii alimentare cu apă potabilă (mc) 14,89 7,26 108,09 11% 11,89 119,98
+Servicii canalizare apă uzată (mc) 11,91 10,48 124,83 11% 13,73 138,56
+Servicii colectare şi transport apă meteorică (mc) 0,00 10,48 0,00 11% 0,00 0,00
+Contravaloare servicii             232,92 25,62 258,54
+Tarife aprobate: Deciziei ANRSC nr. 176/17.12.2025
+Data următoarei citiri: 26.11.2026
+Interval transmitere autocitiri: 21.11.2026 - 25.11.2026
+INFORMAŢII UTILE
+Document privat emis de VRSI.

@@ -1,5 +1,5 @@
 name: Veolia Bridge
-version: "0.1.0"
+version: "0.2.0"
 slug: veolia_bridge
 description: Citește contul Veolia VRSI (clienti-vrsi.veolia.ro) pentru integrarea Veolia VRSI.
 url: https://github.com/romicaraicu/ha-veolia

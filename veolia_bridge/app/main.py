@@ -11,10 +11,11 @@ import aiohttp
 from aiohttp import web
 
 from .browser import PlaywrightPortal
+from .invoices import InvoiceCache
 from .server import create_app
 from .supervisor import announce, load_or_create_token, manual_setup_hint
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 PORT = 8099
 DATA = Path(os.environ.get("VEOLIA_DATA_DIR", "/data"))
 
@@ -34,7 +35,8 @@ def main() -> None:
         level=_log_level(), format="%(asctime)s %(levelname)s %(name)s: %(message)s"
     )
     token = load_or_create_token(DATA / "token")
-    app = create_app(PlaywrightPortal(), token, VERSION)
+    portal = PlaywrightPortal(invoice_cache=InvoiceCache(DATA / "invoices.json"))
+    app = create_app(portal, token, VERSION)
 
     async def on_startup(_: web.Application) -> None:
         _LOGGER.info("Veolia Bridge %s - Listening on 0.0.0.0:%s", VERSION, PORT)

@@ -97,3 +97,53 @@ async def test_refresh_button_stays_available_when_update_fails(hass: HomeAssist
     await hass.async_block_till_done()
     assert hass.states.get(f"sensor.veolia_vrsi_{CODE}_total_de_plata").state == "unavailable"
     assert hass.states.get(f"button.veolia_vrsi_{CODE}_actualizare").state != "unavailable"
+
+
+async def test_price_sensors(hass: HomeAssistant, mock_bridge) -> None:
+    await setup_entry(hass)
+    st = lambda key: hass.states.get(f"{S}_{key}")  # noqa: E731
+    assert st("tarif_apa").state == "7.26"
+    assert st("tarif_apa").attributes["unit_of_measurement"] == "RON/m³"
+    assert st("tarif_canalizare").state == "10.48"
+    price = st("pret_mc_facturat")
+    assert price.state == "17.36"
+    assert price.attributes["factura"] == "VRS000000003"
+    assert [h["luna"] for h in price.attributes["istoric"]] == ["2026-10", "2026-09"]
+    assert st("cost_efectiv_mc").state == "23.5"
+    assert st("apa_facturata").state == "14.89"
+    assert st("apa_facturata").attributes["unit_of_measurement"] == "m³"
+    assert st("diferenta_facturata").state == "3.89"
+
+
+async def test_meter_sensors_from_invoices(hass: HomeAssistant, mock_bridge) -> None:
+    await setup_entry(hass)
+    own = hass.states.get(f"{S}_contor_22aa000001_consum")
+    condo = hass.states.get(f"{S}_contor_i23aa000009_consum")
+    assert own.state == "11.0"
+    assert own.attributes["tip"] == "individual"
+    assert "22AA000001" in own.attributes["friendly_name"]
+    assert own.attributes["friendly_name"].endswith("(individual)")
+    assert condo.state == "102.0"
+    assert condo.attributes["tip"] == "condominiu"
+    assert condo.attributes["index_nou"] == 3355.0
+    assert hass.states.get(f"{S}_contor_i23aa000009_index").state == "3355.0"
+
+
+async def test_new_meter_on_invoice_adds_entities(hass: HomeAssistant, mock_bridge) -> None:
+    entry = await setup_entry(hass)
+    assert hass.states.get(f"{S}_contor_22aa000002_consum") is None
+    detail = mock_bridge.snapshot_data["accounts"]["10000001"]["invoice_details"]["VRS000000003"]
+    detail["meters"].append({
+        "serial": "22AA000002", "kind": "individual", "index_new": 12.0, "index_old": 10.0,
+        "consumption": 2.0, "method": "citire", "reason": None, "date": "2026-10-28",
+    })
+    await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(f"{S}_contor_22aa000002_consum").state == "2.0"
+
+
+async def test_location_without_invoice_details_has_no_meter_entities(hass: HomeAssistant, mock_bridge) -> None:
+    await setup_entry(hass, locations=["4000000002"])
+    s2 = "sensor.veolia_vrsi_4000000002"
+    assert hass.states.get(f"{s2}_pret_mc_facturat").state == "unknown"
+    assert not [s for s in hass.states.async_entity_ids("sensor") if "_contor_" in s]

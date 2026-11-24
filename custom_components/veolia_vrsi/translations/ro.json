@@ -4,7 +4,10 @@
       "user": {
         "title": "Add-on Veolia Bridge",
         "description": "Nu am găsit automat add-on-ul Veolia Bridge. Introdu adresa lui (de ex. http://<hostname>:8099) și token-ul afișat în jurnalul add-on-ului la pornire.",
-        "data": { "bridge_url": "Adresa bridge-ului", "bridge_token": "Token bridge" }
+        "data": {
+          "bridge_url": "Adresa bridge-ului",
+          "bridge_token": "Token bridge"
+        }
       },
       "hassio_confirm": {
         "title": "Veolia VRSI",
@@ -13,17 +16,25 @@
       "credentials": {
         "title": "Cont Veolia",
         "description": "Introdu datele de autentificare folosite pe clienti-vrsi.veolia.ro.",
-        "data": { "email": "Email", "password": "Parolă" }
+        "data": {
+          "email": "Email",
+          "password": "Parolă"
+        }
       },
       "locations": {
         "title": "Locuri de consum",
         "description": "Alege locurile de consum pe care vrei să le monitorizezi.",
-        "data": { "locations": "Locuri de consum", "scan_interval": "Interval de actualizare (ore)" }
+        "data": {
+          "locations": "Locuri de consum",
+          "scan_interval": "Interval de actualizare (ore)"
+        }
       },
       "reauth_confirm": {
         "title": "Reautentificare Veolia",
         "description": "Parola pentru {email} nu mai este acceptată. Introdu parola nouă.",
-        "data": { "password": "Parolă" }
+        "data": {
+          "password": "Parolă"
+        }
       }
     },
     "error": {
@@ -43,32 +54,91 @@
     "step": {
       "init": {
         "title": "Setări Veolia VRSI",
-        "data": { "locations": "Locuri de consum", "scan_interval": "Interval de actualizare (ore)" }
+        "data": {
+          "locations": "Locuri de consum",
+          "scan_interval": "Interval de actualizare (ore)"
+        }
       }
     }
   },
   "entity": {
     "sensor": {
-      "loc_consum": { "name": "Loc de consum" },
-      "consum_ultima_luna": { "name": "Consum ultima lună" },
-      "consum_an_curent": { "name": "Consum an curent" },
-      "ultimul_index": { "name": "Ultimul index" },
-      "total_de_plata": { "name": "Total de plată" },
-      "facturi_neplatite": { "name": "Facturi neplătite" },
-      "facturi_platite": { "name": "Facturi plătite" },
-      "ultima_factura": { "name": "Ultima factură" },
-      "urmatoarea_scadenta": { "name": "Următoarea scadență" },
-      "ultima_plata": { "name": "Ultima plată" },
-      "perioada_index": { "name": "Perioadă transmitere index" },
-      "perioada_index_inceput": { "name": "Început perioadă index" },
-      "perioada_index_sfarsit": { "name": "Sfârșit perioadă index" }
+      "loc_consum": {
+        "name": "Loc de consum"
+      },
+      "consum_ultima_luna": {
+        "name": "Consum ultima lună"
+      },
+      "consum_an_curent": {
+        "name": "Consum an curent"
+      },
+      "ultimul_index": {
+        "name": "Ultimul index"
+      },
+      "total_de_plata": {
+        "name": "Total de plată"
+      },
+      "facturi_neplatite": {
+        "name": "Facturi neplătite"
+      },
+      "facturi_platite": {
+        "name": "Facturi plătite"
+      },
+      "ultima_factura": {
+        "name": "Ultima factură"
+      },
+      "urmatoarea_scadenta": {
+        "name": "Următoarea scadență"
+      },
+      "ultima_plata": {
+        "name": "Ultima plată"
+      },
+      "perioada_index": {
+        "name": "Perioadă transmitere index"
+      },
+      "perioada_index_inceput": {
+        "name": "Început perioadă index"
+      },
+      "perioada_index_sfarsit": {
+        "name": "Sfârșit perioadă index"
+      },
+      "tarif_apa": {
+        "name": "Tarif apă"
+      },
+      "tarif_canalizare": {
+        "name": "Tarif canalizare"
+      },
+      "pret_mc_facturat": {
+        "name": "Preț pe m³ facturat"
+      },
+      "cost_efectiv_mc": {
+        "name": "Cost efectiv pe m³"
+      },
+      "apa_facturata": {
+        "name": "Apă facturată"
+      },
+      "diferenta_facturata": {
+        "name": "Diferență facturată față de contor"
+      },
+      "contor_consum": {
+        "name": "Consum contor {serie} ({tip})"
+      },
+      "contor_index": {
+        "name": "Index contor {serie} ({tip})"
+      }
     },
     "binary_sensor": {
-      "perioada_index_activa": { "name": "Transmitere index permisă" },
-      "factura_restanta": { "name": "Factură restantă" }
+      "perioada_index_activa": {
+        "name": "Transmitere index permisă"
+      },
+      "factura_restanta": {
+        "name": "Factură restantă"
+      }
     },
     "button": {
-      "actualizare": { "name": "Actualizare date" }
+      "actualizare": {
+        "name": "Actualizare date"
+      }
     }
   },
   "issues": {
@@ -82,8 +152,14 @@
       "name": "Transmite index",
       "description": "Transmite indexul autocitit al unui contor (doar în perioada de transmitere și doar pentru contoare care nu sunt citite de la distanță).",
       "fields": {
-        "contor": { "name": "Contor", "description": "Seria contorului (de ex. 22AA000001)." },
-        "index": { "name": "Index", "description": "Indexul citit de pe contor (număr întreg, maxim 6 cifre)." }
+        "contor": {
+          "name": "Contor",
+          "description": "Seria contorului (de ex. 22AA000001)."
+        },
+        "index": {
+          "name": "Index",
+          "description": "Indexul citit de pe contor (număr întreg, maxim 6 cifre)."
+        }
       }
     }
   }

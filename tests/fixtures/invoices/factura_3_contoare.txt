@@ -1,0 +1,14 @@
+ FACTURĂ Nr. VAS000000003
+Data emitere: 05.12.2026
+Data scadenţă: 20.12.2026
+DETALII FACTURĂ
+Perioada de facturare: 29.10.2026 - 26.11.2026
+Serie contor Index nou Index vechi Consum Stabilit prin Motiv* Data
+22AA000001 430 419 11 citire 26.11.2026
+22AA000002 1.205 1.199 6 estimare contor inaccesibil 26.11.2026
+Serie contor condominiu Index nou Index vechi Consum Stabilit prin Motiv* Data
+I23AA000009 3.460 3.355 105 citire 26.11.2026
+Servicii facturate Cantitate(mc) Tarif (lei) Valoare (lei) Cota TVA TVA (lei) Total (lei)
+Servicii alimentare cu apă potabilă (mc) 1.020,50 7,26 7.408,83 11% 814,97 8.223,80
+Servicii canalizare apă uzată (mc) 816,40 10,48 8.555,87 11% 941,15 9.497,02
+Contravaloare servicii             15.964,70 1.756,12 17.720,82

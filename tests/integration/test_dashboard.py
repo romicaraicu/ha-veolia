@@ -9,7 +9,11 @@ import yaml
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.template import Template
 
-from custom_components.veolia_vrsi.statistics import statistic_id
+from custom_components.veolia_vrsi.statistics import (
+    billed_statistic_id,
+    price_statistic_id,
+    statistic_id,
+)
 
 from .conftest import CODE
 from .test_setup import setup_entry
@@ -49,10 +53,19 @@ async def test_dashboard_entities_exist(hass: HomeAssistant, mock_bridge) -> Non
     assert entities, "dashboard-ul nu folosește nicio entitate"
     for entity_id in entities:
         assert hass.states.get(entity_id) is not None, entity_id
-    assert stats == [statistic_id(CODE), statistic_id(CODE)]
+    assert stats == [
+        statistic_id(CODE),
+        statistic_id(CODE),
+        price_statistic_id(CODE),
+        statistic_id(CODE),
+        billed_statistic_id(CODE),
+    ]
     for content in markdown:
         rendered = Template(content, hass).async_render(parse_result=False)
         assert "None" not in rendered
+    meters = next(m for m in markdown if "Contoare de pe ultima factură" in m)
+    rendered = Template(meters, hass).async_render(parse_result=False)
+    assert "22AA000001" in rendered and "I23AA000009" in rendered
 
 
 def test_generator_replaces_placeholder(tmp_path) -> None:

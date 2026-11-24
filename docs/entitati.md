@@ -20,6 +20,26 @@ Entity ID-urile au forma `<platformă>.veolia_vrsi_<cod_loc_consum>_<cheie>`, de
 | `perioada_index_inceput` | Început perioadă index | dată | — |
 | `perioada_index_sfarsit` | Sfârșit perioadă index | dată | — |
 
+### Din PDF-ul facturii (de la 0.2.0)
+
+Add-on-ul descarcă fiecare factură o singură dată (câte cel mult 6 la o actualizare, de la cea mai nouă), deci la prima instalare istoricul complet se adună în câteva actualizări.
+
+| Cheie | Nume | Valoare | Atribute |
+|---|---|---|---|
+| `tarif_apa` | Tarif apă | lei/m³, fără TVA, de pe ultima factură | `factura`, `luna`, `de_la`, `pana_la`, `istoric` |
+| `tarif_canalizare` | Tarif canalizare | lei/m³, fără TVA | la fel |
+| `pret_mc_facturat` | Preț pe m³ facturat | total factură (cu TVA, apă + canalizare) / m³ de apă facturați | la fel; `istoric` are prețul pe fiecare lună |
+| `cost_efectiv_mc` | Cost efectiv pe m³ | total factură / consumul contoarelor tale (include partea din condominiu) | la fel |
+| `apa_facturata` | Apă facturată | m³ de apă de pe factură | la fel |
+| `diferenta_facturata` | Diferență facturată față de contor | m³ facturați peste consumul contoarelor tale | la fel |
+
+**Contoarele sunt citite din factură**, nu sunt fixate nicăieri: pentru fiecare serie găsită (contorul tău, contorul de condominiu sau oricâte altele) apar două entități, iar un contor nou apare automat când e pe o factură:
+
+| Cheie | Nume | Valoare | Atribute |
+|---|---|---|---|
+| `contor_<serie>_consum` | Consum contor &lt;serie&gt; (&lt;tip&gt;) | m³ pe ultima factură | `serie`, `tip` (`individual`, `condominiu`…), `index_nou`, `index_vechi`, `stabilit_prin`, `motiv`, `data`, `consum_lunar` |
+| `contor_<serie>_index` | Index contor &lt;serie&gt; (&lt;tip&gt;) | indexul nou | la fel, fără `consum_lunar` |
+
 O factură din listă are forma:
 
 ```yaml
@@ -46,7 +66,14 @@ platita_la: null
 
 ## Statistici
 
-`veolia_vrsi:consum_apa_<cod_loc_consum>` (m³): câte o valoare pe lună, cu tot istoricul din portal. Se folosește în cardul **Statistics graph** cu `stat_types: [change]` și `period: month` sau `period: year`.
+| Statistică | Unitate | Ce conține |
+|---|---|---|
+| `veolia_vrsi:consum_apa_<cod_loc_consum>` | m³ | consumul lunar din portal, cu tot istoricul |
+| `veolia_vrsi:contor_<serie>` | m³ | consumul lunar al fiecărui contor de pe facturi |
+| `veolia_vrsi:apa_facturata_<cod_loc_consum>` | m³ | apa facturată pe lună |
+| `veolia_vrsi:pret_mc_<cod_loc_consum>` | lei/m³ | prețul pe m³ facturat, pe lună (medie) |
+
+Pentru m³ folosește cardul **Statistics graph** cu `stat_types: [change]` și `period: month` sau `period: year`; pentru preț, `stat_types: [mean]`.
 
 ## Acțiunea `veolia_vrsi.trimite_index`
 

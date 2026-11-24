@@ -1,0 +1,13 @@
+ FACTURĂ Nr. VAS000000001
+Data emitere: 06.10.2026
+Data scadenţă: 21.10.2026
+DETALII FACTURĂ
+Perioada de facturare: 29.08.2026 - 28.09.2026
+Serie contor Index nou Index vechi Consum Stabilit prin Motiv* Data
+22AA000001 408 395 13 citire 28.09.2026
+Servicii facturate Cantitate(mc) Tarif (lei) Valoare (lei) Cota TVA TVA (lei) Total (lei)
+Servicii alimentare cu apă potabilă (mc) 13,00 7,26 94,38 11% 10,38 104,76
+Servicii canalizare apă uzată (mc) 10,40 10,48 108,99 11% 11,99 120,98
+Contravaloare servicii             203,37 22,37 225,74
+Data următoarei citiri: 28.10.2026
+Interval transmitere autocitiri: 23.10.2026 - 27.10.2026

@@ -4,7 +4,10 @@
       "user": {
         "title": "Veolia Bridge add-on",
         "description": "The Veolia Bridge add-on was not discovered automatically. Enter its address (e.g. http://<hostname>:8099) and the token shown in the add-on log at startup.",
-        "data": { "bridge_url": "Bridge address", "bridge_token": "Bridge token" }
+        "data": {
+          "bridge_url": "Bridge address",
+          "bridge_token": "Bridge token"
+        }
       },
       "hassio_confirm": {
         "title": "Veolia VRSI",
@@ -13,17 +16,25 @@
       "credentials": {
         "title": "Veolia account",
         "description": "Enter the credentials you use on clienti-vrsi.veolia.ro.",
-        "data": { "email": "Email", "password": "Password" }
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        }
       },
       "locations": {
         "title": "Consumption points",
         "description": "Choose the consumption points to monitor.",
-        "data": { "locations": "Consumption points", "scan_interval": "Update interval (hours)" }
+        "data": {
+          "locations": "Consumption points",
+          "scan_interval": "Update interval (hours)"
+        }
       },
       "reauth_confirm": {
         "title": "Veolia re-authentication",
         "description": "The password for {email} is no longer accepted. Enter the new password.",
-        "data": { "password": "Password" }
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
@@ -43,32 +54,91 @@
     "step": {
       "init": {
         "title": "Veolia VRSI settings",
-        "data": { "locations": "Consumption points", "scan_interval": "Update interval (hours)" }
+        "data": {
+          "locations": "Consumption points",
+          "scan_interval": "Update interval (hours)"
+        }
       }
     }
   },
   "entity": {
     "sensor": {
-      "loc_consum": { "name": "Consumption point" },
-      "consum_ultima_luna": { "name": "Last month consumption" },
-      "consum_an_curent": { "name": "Current year consumption" },
-      "ultimul_index": { "name": "Last meter reading" },
-      "total_de_plata": { "name": "Amount due" },
-      "facturi_neplatite": { "name": "Unpaid invoices" },
-      "facturi_platite": { "name": "Paid invoices" },
-      "ultima_factura": { "name": "Last invoice" },
-      "urmatoarea_scadenta": { "name": "Next due date" },
-      "ultima_plata": { "name": "Last payment" },
-      "perioada_index": { "name": "Meter reading window" },
-      "perioada_index_inceput": { "name": "Meter reading window start" },
-      "perioada_index_sfarsit": { "name": "Meter reading window end" }
+      "loc_consum": {
+        "name": "Consumption point"
+      },
+      "consum_ultima_luna": {
+        "name": "Last month consumption"
+      },
+      "consum_an_curent": {
+        "name": "Current year consumption"
+      },
+      "ultimul_index": {
+        "name": "Last meter reading"
+      },
+      "total_de_plata": {
+        "name": "Amount due"
+      },
+      "facturi_neplatite": {
+        "name": "Unpaid invoices"
+      },
+      "facturi_platite": {
+        "name": "Paid invoices"
+      },
+      "ultima_factura": {
+        "name": "Last invoice"
+      },
+      "urmatoarea_scadenta": {
+        "name": "Next due date"
+      },
+      "ultima_plata": {
+        "name": "Last payment"
+      },
+      "perioada_index": {
+        "name": "Meter reading window"
+      },
+      "perioada_index_inceput": {
+        "name": "Meter reading window start"
+      },
+      "perioada_index_sfarsit": {
+        "name": "Meter reading window end"
+      },
+      "tarif_apa": {
+        "name": "Water tariff"
+      },
+      "tarif_canalizare": {
+        "name": "Sewage tariff"
+      },
+      "pret_mc_facturat": {
+        "name": "Billed price per m³"
+      },
+      "cost_efectiv_mc": {
+        "name": "Effective cost per m³"
+      },
+      "apa_facturata": {
+        "name": "Billed water"
+      },
+      "diferenta_facturata": {
+        "name": "Billed minus metered water"
+      },
+      "contor_consum": {
+        "name": "Meter {serie} consumption ({tip})"
+      },
+      "contor_index": {
+        "name": "Meter {serie} reading ({tip})"
+      }
     },
     "binary_sensor": {
-      "perioada_index_activa": { "name": "Meter reading allowed" },
-      "factura_restanta": { "name": "Overdue invoice" }
+      "perioada_index_activa": {
+        "name": "Meter reading allowed"
+      },
+      "factura_restanta": {
+        "name": "Overdue invoice"
+      }
     },
     "button": {
-      "actualizare": { "name": "Refresh data" }
+      "actualizare": {
+        "name": "Refresh data"
+      }
     }
   },
   "issues": {
@@ -82,8 +152,14 @@
       "name": "Submit meter reading",
       "description": "Submits a self-read meter index (only during the reading window and only for meters that are not read remotely).",
       "fields": {
-        "contor": { "name": "Meter", "description": "Meter serial number (e.g. 22AA000001)." },
-        "index": { "name": "Index", "description": "Meter reading (integer, up to 6 digits)." }
+        "contor": {
+          "name": "Meter",
+          "description": "Meter serial number (e.g. 22AA000001)."
+        },
+        "index": {
+          "name": "Index",
+          "description": "Meter reading (integer, up to 6 digits)."
+        }
       }
     }
   }

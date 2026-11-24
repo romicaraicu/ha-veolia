@@ -141,6 +141,122 @@ class Payment:
 
 
 @dataclass
+class InvoiceMeter:
+    serial: str
+    kind: str
+    index_new: float | None
+    index_old: float | None
+    consumption: float | None
+    method: str
+    reason: str | None
+    date: date | None
+
+    def as_attr(self) -> dict[str, Any]:
+        return {
+            "serie": self.serial,
+            "tip": self.kind,
+            "index_nou": self.index_new,
+            "index_vechi": self.index_old,
+            "consum": self.consumption,
+            "stabilit_prin": self.method,
+            "motiv": self.reason,
+            "data": iso(self.date),
+        }
+
+
+@dataclass
+class InvoiceDetail:
+    """Cifrele extrase din PDF-ul unei facturi."""
+
+    number: str
+    issued: date | None
+    period_start: date | None
+    period_end: date | None
+    meters: list[InvoiceMeter]
+    services: dict[str, dict[str, Any]]
+    total: float | None
+
+    @property
+    def month(self) -> str | None:
+        end = self.period_end or self.issued
+        return f"{end.year:04d}-{end.month:02d}" if end else None
+
+    def tariff(self, service: str) -> float | None:
+        return to_float((self.services.get(service) or {}).get("tariff"))
+
+    @property
+    def water_billed(self) -> float | None:
+        return to_float((self.services.get("apa") or {}).get("quantity"))
+
+    @property
+    def price_per_m3(self) -> float | None:
+        """Total factură (cu TVA, apă + canalizare) / m³ de apă facturați."""
+        if not self.total or not self.water_billed:
+            return None
+        return round(self.total / self.water_billed, 2)
+
+    @property
+    def own_consumption(self) -> float | None:
+        values = [m.consumption for m in self.meters if m.kind == "individual" and m.consumption is not None]
+        return round(sum(values), 3) if values else None
+
+    @property
+    def effective_cost_per_m3(self) -> float | None:
+        """Total factură / consumul contoarelor proprii (include partea din condominiu)."""
+        if not self.total or not self.own_consumption:
+            return None
+        return round(self.total / self.own_consumption, 2)
+
+    @property
+    def billed_difference(self) -> float | None:
+        if self.water_billed is None or self.own_consumption is None:
+            return None
+        return round(self.water_billed - self.own_consumption, 3)
+
+    def as_attr(self) -> dict[str, Any]:
+        return {
+            "factura": self.number,
+            "luna": self.month,
+            "de_la": iso(self.period_start),
+            "pana_la": iso(self.period_end),
+            "apa_facturata": self.water_billed,
+            "consum_contoare_proprii": self.own_consumption,
+            "pret_mc": self.price_per_m3,
+            "cost_efectiv_mc": self.effective_cost_per_m3,
+            "total": self.total,
+        }
+
+
+def _invoice_detail(raw: dict[str, Any]) -> InvoiceDetail | None:
+    if not isinstance(raw, dict) or raw.get("parse_error"):
+        return None
+    meters = [
+        InvoiceMeter(
+            serial=str(m.get("serial") or ""),
+            kind=str(m.get("kind") or "individual"),
+            index_new=to_float(m.get("index_new")),
+            index_old=to_float(m.get("index_old")),
+            consumption=to_float(m.get("consumption")),
+            method=str(m.get("method") or ""),
+            reason=m.get("reason"),
+            date=parse_date(m.get("date")),
+        )
+        for m in raw.get("meters") or []
+        if isinstance(m, dict) and m.get("serial")
+    ]
+    services = raw.get("services") if isinstance(raw.get("services"), dict) else {}
+    return InvoiceDetail(
+        number=str(raw.get("invoice_number") or ""),
+        issued=parse_date(raw.get("issued")),
+        period_start=parse_date(raw.get("period_start")),
+        period_end=parse_date(raw.get("period_end")),
+        meters=meters,
+        services=services,
+        total=to_float(raw.get("total")),
+    )
+
+
+@dataclass
 class LocationData:
     client_code: str
     code: str
@@ -155,6 +271,7 @@ class LocationData:
     payments: list[Payment] = field(default_factory=list)
     total_to_pay: float | None = None
     last_invoice: Invoice | None = None
+    invoice_details: list[InvoiceDetail] = field(default_factory=list)
 
     # ---------------------------------------------------------- consum
     @property
@@ -218,6 +335,41 @@ class LocationData:
         if not self.reading or self.is_smart:
             return False
         return self.reading.get("Inperioada") == "X"
+
+    # ---------------------------------------------------------- detalii factură (PDF)
+    @property
+    def latest_invoice_detail(self) -> InvoiceDetail | None:
+        return self.invoice_details[0] if self.invoice_details else None
+
+    def meter_readings(self) -> dict[str, InvoiceMeter]:
+        """Ultima citire a fiecărui contor apărut pe facturi (serie → citire)."""
+        readings: dict[str, InvoiceMeter] = {}
+        for detail in reversed(self.invoice_details):
+            for meter in detail.meters:
+                readings[meter.serial] = meter
+        return dict(sorted(readings.items(), key=lambda kv: (kv[1].kind != "individual", kv[0])))
+
+    def meter_monthly(self, serial: str) -> dict[str, float]:
+        totals: dict[str, float] = {}
+        for detail in reversed(self.invoice_details):
+            for meter in detail.meters:
+                if meter.serial == serial and meter.consumption is not None and detail.month:
+                    totals[detail.month] = round(totals.get(detail.month, 0.0) + meter.consumption, 3)
+        return dict(sorted(totals.items()))
+
+    def billed_monthly(self) -> dict[str, float]:
+        totals: dict[str, float] = {}
+        for detail in reversed(self.invoice_details):
+            if detail.water_billed is not None and detail.month:
+                totals[detail.month] = round(totals.get(detail.month, 0.0) + detail.water_billed, 3)
+        return dict(sorted(totals.items()))
+
+    def price_monthly(self) -> dict[str, float]:
+        prices: dict[str, float] = {}
+        for detail in reversed(self.invoice_details):
+            if detail.price_per_m3 is not None and detail.month:
+                prices[detail.month] = detail.price_per_m3
+        return dict(sorted(prices.items()))
 
     # ---------------------------------------------------------- facturi
     def next_due_date(self, today: date) -> date | None:
@@ -287,7 +439,15 @@ def build_locations(snapshot: dict[str, Any]) -> dict[str, LocationData]:
                 last_invoice_raw, not any(i.number == number for i in unpaid)
             )
 
-        for loc in account.get("locations") or []:
+        details = [
+            d for d in map(_invoice_detail, (account.get("invoice_details") or {}).values()) if d
+        ]
+        details.sort(key=lambda d: d.period_end or d.issued or date.min, reverse=True)
+        account_locations = [
+            loc for loc in account.get("locations") or [] if loc.get("ConsumptionPointCode")
+        ]
+
+        for loc in account_locations:
             code = str(loc.get("ConsumptionPointCode") or "")
             if not code:
                 continue
@@ -322,5 +482,12 @@ def build_locations(snapshot: dict[str, Any]) -> dict[str, LocationData]:
                 payments=payments,
                 total_to_pay=to_float(account.get("total_to_pay")),
                 last_invoice=last_invoice,
+                invoice_details=[
+                    d
+                    for d in details
+                    # o factură aparține locului cu contorul ei; un cod client cu un singur
+                    # loc primește toate facturile
+                    if len(account_locations) == 1 or any(m.serial in meters for m in d.meters)
+                ],
             )
     return result

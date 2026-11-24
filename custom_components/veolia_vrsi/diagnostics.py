@@ -22,7 +22,20 @@ TO_REDACT = {
     "ConsumptionPointAddress",
     "InvoiceNumber",
     "DocumentNumber",
+    "invoice_number",
 }
+
+
+def _without_invoice_keys(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """`invoice_details` e indexat după numărul facturii: îl transformăm în listă."""
+    accounts = {
+        code: {
+            **account,
+            "invoice_details": list((account.get("invoice_details") or {}).values()),
+        }
+        for code, account in (snapshot.get("accounts") or {}).items()
+    }
+    return {**snapshot, "accounts": accounts}
 
 
 async def async_get_config_entry_diagnostics(
@@ -49,5 +62,5 @@ async def async_get_config_entry_diagnostics(
         },
         "last_update_success": coordinator.last_update_success,
         "locations": locations,
-        "snapshot": async_redact_data(coordinator.raw, TO_REDACT),
+        "snapshot": async_redact_data(_without_invoice_keys(coordinator.raw), TO_REDACT),
     }

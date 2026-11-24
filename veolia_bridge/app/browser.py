@@ -19,6 +19,8 @@ from playwright.async_api import Page, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeout
 
 from .errors import PortalError, classify_call_failure, classify_login_failure
+from .invoice_pdf import pdf_to_text
+from .invoices import InvoiceCache, add_invoice_details
 from .snapshot import Call, build_save_index_body, build_snapshot
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,13 +52,22 @@ async ([endpoint, body]) => {
 class PlaywrightPortal:
     """Implementarea `Portal` folosită în add-on."""
 
-    def __init__(self, base_url: str = PORTAL_URL, waf_timeout: float = 45.0) -> None:
+    def __init__(
+        self,
+        base_url: str = PORTAL_URL,
+        waf_timeout: float = 45.0,
+        invoice_cache: InvoiceCache | None = None,
+    ) -> None:
         self._base = base_url.rstrip("/")
         self._waf_timeout_ms = waf_timeout * 1000
+        self._invoice_cache = invoice_cache
 
     async def snapshot(self, email: str, password: str) -> dict:
         async with self._session(email, password) as call:
-            return await build_snapshot(call, date.today())
+            snapshot = await build_snapshot(call, date.today())
+            if self._invoice_cache is not None:
+                await add_invoice_details(call, snapshot, self._invoice_cache, pdf_to_text)
+            return snapshot
 
     async def submit_index(
         self, email: str, password: str, client_code: str, meter: str, index: int

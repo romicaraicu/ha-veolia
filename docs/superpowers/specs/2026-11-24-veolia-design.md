@@ -85,6 +85,7 @@ Sesiunea e un cookie HttpOnly. Răspunsul are mereu forma
 | `get-unpaid-invoices` | `{clientCode}` | `UnpaidInvoices[]` (factură) |
 | `get-invoices` | `{clientCode, year}` | `PaidInvoices[]` (factură) pentru anul cerut |
 | `get-payments` | `{clientCode}` | `Payments[]`: `PaymentDate`, `PaidAmount`, `PaymentType`, `DocumentNumber`, `Sold` |
+| `download-invoice` (din 0.2.0) | `{clientCode, invoiceNumber}` | `InvoiceContent`: PDF-ul facturii în base64; vezi `docs/superpowers/plans/2026-11-25-veolia-v0.2-facturi.md` |
 | `save-index` | `{clientCode, adatsoll, anlage, zwnummer, index, matnr, sernr, equnr}` — toate în afară de `index` vin din `MeterReadingDetails` (`Adatsoll`, `Anlage`, `Zwnummer`, `Matnr`, `Sernr`, `Equnr`) | trimiterea indexului; portalul permite doar dacă `IsSmart == false` **și** `Inperioada == "X"`; index max. 6 cifre, fără litere |
 
 Obiectul „factură”: `InvoiceNumber`, `DateIn` (emitere), `DueDate`, `Total`

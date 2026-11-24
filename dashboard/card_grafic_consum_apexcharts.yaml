@@ -1,0 +1,36 @@
+# Grafic lunar de consum cu ApexCharts (opțional) - necesită cardul apexcharts-card:
+#   Setări -> Marketplace -> Add from link -> RomRider/apexcharts-card -> Install
+#   (pe Home Assistant mai vechi de 2026.11: HACS -> Frontend -> apexcharts-card).
+# Dashboard-ul principal folosește deja cardul standard "Statistics graph";
+# acesta e o alternativă construită din atributul `istoric` (ultimele 24 de perioade).
+# Înlocuiește `4000000000` cu codul locului de consum și adaugă cardul
+# într-un dashboard (Adaugă card -> Manual -> lipește).
+
+type: custom:apexcharts-card
+header:
+  show: true
+  title: Consum lunar de apă (m³)
+  show_states: false
+graph_span: 2y
+span:
+  end: month
+apex_config:
+  chart:
+    height: 260
+  plotOptions:
+    bar:
+      columnWidth: 60%
+      borderRadius: 4
+  dataLabels:
+    enabled: false
+series:
+  - entity: sensor.veolia_vrsi_4000000000_consum_ultima_luna
+    name: Consum
+    type: column
+    color: "#00A3E0"
+    data_generator: |
+      const h = entity.attributes.istoric || [];
+      return h
+        .filter(e => e.pana_la)
+        .map(e => [new Date(e.pana_la).getTime(), e.m3])
+        .reverse();

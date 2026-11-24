@@ -1,0 +1,152 @@
+# Dashboard Veolia VRSI pentru Home Assistant
+# --------------------------------------------
+# Folosește doar carduri standard (fără carduri custom din Marketplace sau HACS).
+#
+# 1. Înlocuiește peste tot `4000000000` cu codul locului tău de consum. Îl găsești în
+#    Setări -> Dispozitive și servicii -> Veolia VRSI -> dispozitiv (număr de serie).
+#    Sau rulează: python3 tools/genereaza_dashboard.py <cod_loc_consum>
+# 2. Setări -> Panouri de bord -> Adaugă panou -> "Pornește de la zero"
+# 3. Deschide panoul -> ✏️ -> ⋮ -> "Editor de configurație brută" -> lipește tot fișierul.
+
+title: Veolia
+views:
+  - title: Apă
+    path: veolia
+    icon: mdi:water
+    type: sections
+    max_columns: 3
+    sections:
+      # ------------------------------------------------------------ SUMAR
+      - type: grid
+        cards:
+          - type: heading
+            heading: Sumar
+            icon: mdi:home-outline
+            badges:
+              - type: entity
+                entity: binary_sensor.veolia_vrsi_4000000000_factura_restanta
+                show_state: true
+                color: red
+                visibility:
+                  - condition: state
+                    entity: binary_sensor.veolia_vrsi_4000000000_factura_restanta
+                    state: "on"
+          - type: markdown
+            content: |-
+              ### {{ states('sensor.veolia_vrsi_4000000000_loc_consum') }}
+
+              Cod client **{{ state_attr('sensor.veolia_vrsi_4000000000_loc_consum', 'cod_client') }}**
+              · Contract **{{ state_attr('sensor.veolia_vrsi_4000000000_loc_consum', 'contract') or '—' }}**
+              · Contor **{{ (state_attr('sensor.veolia_vrsi_4000000000_loc_consum', 'contoare') or ['—']) | join(', ') }}**
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_total_de_plata
+            name: Total de plată
+            color: blue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_urmatoarea_scadenta
+            name: Scadență
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_consum_ultima_luna
+            name: Consum ultima lună
+            color: cyan
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_consum_an_curent
+            name: Consum an curent
+            color: light-blue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_ultima_plata
+            name: Ultima plată
+            color: green
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: button.veolia_vrsi_4000000000_actualizare
+            name: Actualizează
+            color: blue-grey
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.veolia_vrsi_4000000000_actualizare
+            grid_options:
+              columns: 6
+
+      # ------------------------------------------------------------ CONSUM
+      - type: grid
+        cards:
+          - type: heading
+            heading: Consum de apă
+            icon: mdi:water-outline
+          - type: statistics-graph
+            title: Pe luni (m³)
+            entities:
+              - veolia_vrsi:consum_apa_4000000000
+            stat_types:
+              - change
+            chart_type: bar
+            period: month
+            days_to_show: 730
+            hide_legend: true
+          - type: statistics-graph
+            title: Pe ani (m³)
+            entities:
+              - veolia_vrsi:consum_apa_4000000000
+            stat_types:
+              - change
+            chart_type: bar
+            period: year
+            days_to_show: 1825
+            hide_legend: true
+
+      # ------------------------------------------------------------ INDEX ȘI FACTURI
+      - type: grid
+        cards:
+          - type: heading
+            heading: Index
+            icon: mdi:counter
+          - type: tile
+            entity: sensor.veolia_vrsi_4000000000_ultimul_index
+            name: Ultimul index
+            color: cyan
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.veolia_vrsi_4000000000_perioada_index_activa
+            name: Transmitere permisă
+            grid_options:
+              columns: 6
+          - type: markdown
+            content: |-
+              **Perioadă transmitere index:** {{ states('sensor.veolia_vrsi_4000000000_perioada_index') }}
+              {% if state_attr('binary_sensor.veolia_vrsi_4000000000_perioada_index_activa', 'contor_smart') %}
+              · contorul este citit de la distanță, nu e nevoie să transmiți indexul
+              {% endif %}
+          - type: heading
+            heading: Facturi
+            icon: mdi:file-document-outline
+          - type: markdown
+            content: |-
+              {% set neplatite = state_attr('sensor.veolia_vrsi_4000000000_facturi_neplatite', 'facturi') or [] %}
+              {% set platite = state_attr('sensor.veolia_vrsi_4000000000_facturi_platite', 'facturi') or [] %}
+              **De plată**
+              {% for f in neplatite %}
+              - {{ f.numar }} · {{ f.rest_plata }} lei · scadență {{ f.scadenta }}
+              {% else %}
+              - nimic de plată 🎉
+              {% endfor %}
+
+              **Plătite (ultimele 12 luni)**
+              {% for f in platite %}
+              - {{ f.numar }} · {{ f.total }} lei · plătită {{ f.platita_la or '—' }}
+              {% else %}
+              - —
+              {% endfor %}

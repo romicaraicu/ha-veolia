@@ -1,0 +1,6 @@
+{
+  "name": "Veolia VRSI",
+  "render_readme": true,
+  "country": ["RO"],
+  "homeassistant": "2025.10.0"
+}

@@ -1,0 +1,107 @@
+{
+  "fetched_at": "2026-11-24T09:00:00+00:00",
+  "client_codes": ["10000001", "10000002"],
+  "accounts": {
+    "10000001": {
+      "locations": [
+        {
+          "ConsumptionClientAddress": "STR. EXEMPLU, Nr 1, Postal Code 075100, OTOPENI, OTOPENI",
+          "ConsumptionInstallation": "5000000001",
+          "ConsumptionMeters": ["22AA000001"],
+          "ConsumptionPointCode": "4000000001"
+        }
+      ],
+      "contracts": [
+        {
+          "Address": "STR. EXEMPLU, Nr 1, OTOPENI",
+          "AddressConsumptionPoint": "STR. EXEMPLU, Nr 1, Postal Code 075100, OTOPENI",
+          "ClientName": "ION POPESCU",
+          "ConsumptionPointCode": "4000000001",
+          "ContractNumber": "7000000001",
+          "ContractNumberWithAnb": "ANB0000001",
+          "ContractStartDate": "2023-02-27",
+          "Installation": "5000000001",
+          "MeterSeries": ["22AA000001"],
+          "Type": "Apa si canal"
+        }
+      ],
+      "meters": {
+        "22AA000001": {
+          "consumption_point": "4000000001",
+          "installation": "5000000001",
+          "last_index": {
+            "Ablstat": "",
+            "Adatsoll": "2026-11-25",
+            "AdatsollMin": "2026-11-21",
+            "Anlage": "5000000001",
+            "ConsumptionPointAddress": "STR. EXEMPLU, Nr 1, OTOPENI",
+            "ConsumptionPointIdentifier": "4000000001",
+            "Equnr": "000000000010000001",
+            "Inperioada": "X",
+            "IsSmart": true,
+            "LastIndex": 419,
+            "LastIndexDate": "2026-10-28",
+            "Matnr": "000000000000100001",
+            "Sernr": "22AA000001",
+            "Zwnummer": "001"
+          },
+          "index_history": [
+            {"Consumption": 14, "EndDate": "2026-10-28", "Index": "419", "StartDate": "2026-09-29", "Type": "citire"},
+            {"Consumption": 13, "EndDate": "2026-09-28", "Index": "405", "StartDate": "2026-08-30", "Type": "citire"},
+            {"Consumption": 9, "EndDate": "2025-12-30", "Index": "300", "StartDate": "2025-12-01", "Type": "citire"}
+          ]
+        }
+      },
+      "last_invoice": {
+        "DateIn": "2026-11-03", "Downloadable": true, "DueDate": "2026-11-18",
+        "InvoiceNumber": "VRS000000003", "LastPayDate": "0000-00-00",
+        "PayUTransactionDate": "0000-00-00", "SapStatus": "", "Sold": "258.54",
+        "SoldTotal": 258.54, "Status": "00", "Total": "258.54", "Type": "u"
+      },
+      "total_to_pay": 258.54,
+      "unpaid_invoices": [
+        {
+          "DateIn": "2026-11-03", "Downloadable": true, "DueDate": "2026-11-18",
+          "InvoiceNumber": "VRS000000003", "LastPayDate": "0000-00-00",
+          "PayUTransactionDate": "0000-00-00", "SapStatus": "", "Sold": "258.54",
+          "SoldTotal": 258.54, "Status": "00", "Total": "258.54", "Type": "u"
+        }
+      ],
+      "paid_invoices": [
+        {
+          "DateIn": "2026-10-06", "Downloadable": true, "DueDate": "2026-10-21",
+          "InvoiceNumber": "VRS000000002", "LastPayDate": "2026-10-07",
+          "PayUTransactionDate": "2026-10-07", "SapStatus": "Achitata", "Sold": "0.00",
+          "SoldTotal": 0, "Status": "03", "Total": "120.00", "Type": "u"
+        },
+        {
+          "DateIn": "2025-12-05", "Downloadable": true, "DueDate": "2025-12-20",
+          "InvoiceNumber": "VRS000000001", "LastPayDate": "2025-12-10",
+          "PayUTransactionDate": "0000-00-00", "SapStatus": "Achitata", "Sold": "0.00",
+          "SoldTotal": 0, "Status": "00", "Total": "95.10", "Type": "u"
+        }
+      ],
+      "payments": [
+        {"DocumentNumber": "900000000002", "PaidAmount": "120.00", "PaymentDate": "2026-10-07", "PaymentType": "Incasare PayU", "Sold": "0.00"},
+        {"DocumentNumber": "900000000001", "PaidAmount": "95.10", "PaymentDate": "2025-12-10", "PaymentType": "Incasari PAGO", "Sold": "0.00"}
+      ]
+    },
+    "10000002": {
+      "locations": [
+        {
+          "ConsumptionClientAddress": "STR. A DOUA, Nr 2, OTOPENI",
+          "ConsumptionInstallation": "5000000002",
+          "ConsumptionMeters": [],
+          "ConsumptionPointCode": "4000000002"
+        }
+      ],
+      "contracts": [],
+      "meters": {},
+      "last_invoice": null,
+      "total_to_pay": null,
+      "unpaid_invoices": [],
+      "paid_invoices": [],
+      "payments": []
+    }
+  }
+}

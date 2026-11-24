@@ -1,0 +1,18 @@
+name: Veolia Bridge
+version: "0.1.0"
+slug: veolia_bridge
+description: Citește contul Veolia VRSI (clienti-vrsi.veolia.ro) pentru integrarea Veolia VRSI.
+url: https://github.com/romicaraicu/ha-veolia
+arch:
+  - amd64
+  - aarch64
+startup: application
+boot: auto
+init: false
+hassio_api: true
+discovery:
+  - veolia_vrsi
+options:
+  log_level: info
+schema:
+  log_level: list(debug|info|warning|error)

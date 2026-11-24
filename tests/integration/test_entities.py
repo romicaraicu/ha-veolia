@@ -86,3 +86,14 @@ async def test_device(hass: HomeAssistant, mock_bridge) -> None:
     assert ("veolia_vrsi", CODE) in device.identifiers
     assert device.name.startswith("Veolia STR. EXEMPLU")
     assert device.manufacturer == "Veolia România Soluții Integrate"
+
+
+async def test_refresh_button_stays_available_when_update_fails(hass: HomeAssistant, mock_bridge) -> None:
+    from custom_components.veolia_vrsi.api import VeoliaBlockedError
+
+    entry = await setup_entry(hass)
+    mock_bridge.get_snapshot.side_effect = VeoliaBlockedError("blocat")
+    await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(f"sensor.veolia_vrsi_{CODE}_total_de_plata").state == "unavailable"
+    assert hass.states.get(f"button.veolia_vrsi_{CODE}_actualizare").state != "unavailable"

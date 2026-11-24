@@ -25,5 +25,10 @@ class VeoliaRefreshButton(VeoliaEntity, ButtonEntity):
     def __init__(self, coordinator, code: str) -> None:
         super().__init__(coordinator, code, "actualizare", "button")
 
+    @property
+    def available(self) -> bool:
+        # butonul rămâne disponibil și după o actualizare eșuată: e calea de reîncercare
+        return self.location is not None
+
     async def async_press(self) -> None:
         await self.coordinator.async_request_refresh()

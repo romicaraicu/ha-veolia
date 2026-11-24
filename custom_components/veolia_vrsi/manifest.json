@@ -1,7 +1,7 @@
 {
   "domain": "veolia_vrsi",
   "name": "Veolia VRSI",
-  "after_dependencies": ["hassio"],
+  "after_dependencies": ["hassio", "recorder"],
   "codeowners": ["@romicaraicu"],
   "config_flow": true,
   "dependencies": [],

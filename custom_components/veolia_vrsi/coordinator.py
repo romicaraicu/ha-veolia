@@ -14,6 +14,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .api import VeoliaAuthError, VeoliaBridgeClient, VeoliaError
 from .const import CONF_LOCATIONS, CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_HOURS, DOMAIN
 from .parser import LocationData, build_locations
+from .statistics import async_import_statistics
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,4 +53,6 @@ class VeoliaCoordinator(DataUpdateCoordinator[dict[str, LocationData]]):
         locations = build_locations(snapshot)
         if self.selected_locations:
             locations = {k: v for k, v in locations.items() if k in self.selected_locations}
+        if "recorder" in self.hass.config.components:
+            await async_import_statistics(self.hass, locations)
         return locations

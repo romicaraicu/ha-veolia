@@ -66,3 +66,25 @@ async def test_unload(hass: HomeAssistant, mock_bridge) -> None:
     entry = await setup_entry(hass)
     assert await hass.config_entries.async_unload(entry.entry_id)
     assert entry.state is ConfigEntryState.NOT_LOADED
+
+
+async def test_update_imports_statistics_when_recorder_loaded(hass: HomeAssistant, mock_bridge) -> None:
+    from unittest.mock import AsyncMock, patch
+
+    hass.config.components.add("recorder")
+    with patch(
+        "custom_components.veolia_vrsi.coordinator.async_import_statistics", new=AsyncMock()
+    ) as mock_import:
+        await setup_entry(hass)
+    mock_import.assert_awaited_once()
+    assert set(mock_import.await_args.args[1]) == {CODE}
+
+
+async def test_update_skips_statistics_without_recorder(hass: HomeAssistant, mock_bridge) -> None:
+    from unittest.mock import AsyncMock, patch
+
+    with patch(
+        "custom_components.veolia_vrsi.coordinator.async_import_statistics", new=AsyncMock()
+    ) as mock_import:
+        await setup_entry(hass)
+    mock_import.assert_not_awaited()

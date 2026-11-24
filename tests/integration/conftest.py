@@ -9,7 +9,6 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-pytest_plugins = "pytest_homeassistant_custom_component"
 
 FIXTURE = Path(__file__).parent.parent / "fixtures" / "snapshot.json"
 CODE = "4000000001"

@@ -77,3 +77,26 @@ async def test_statistics_idempotent_and_merge_same_month(hass: HomeAssistant) -
     assert meta1["has_sum"] is True
     assert meta1["unit_of_measurement"] == "m³"
     assert meta1["unit_class"] == "volume"
+
+
+def test_monthly_rows_with_base() -> None:
+    loc = build_locations(load_snapshot())[CODE]
+    rows = monthly_rows(loc, TZ, base=100.0)
+    assert [r[2] for r in rows] == [109.0, 122.0, 136.0]
+
+
+async def test_import_anchors_on_stored_sum(hass: HomeAssistant) -> None:
+    """Dacă există deja statistici înainte de prima lună importată, suma continuă de la ele."""
+    await hass.config.async_set_time_zone("Europe/Bucharest")
+    loc = build_locations(load_snapshot())[CODE]
+    with patch(
+        "custom_components.veolia_vrsi.statistics._async_stored_sum_before",
+        return_value=50.0,
+    ) as stored, patch(
+        "custom_components.veolia_vrsi.statistics.async_add_external_statistics"
+    ) as mock_add:
+        await async_import_statistics(hass, {CODE: loc})
+    assert stored.await_args.args[1] == statistic_id(CODE)
+    assert stored.await_args.args[2] == datetime(2025, 12, 1, tzinfo=TZ)
+    _, _, stats = mock_add.call_args.args
+    assert [s["sum"] for s in stats] == [59.0, 72.0, 86.0]

@@ -293,7 +293,16 @@ def build_locations(snapshot: dict[str, Any]) -> dict[str, LocationData]:
                 continue
             meters = [str(m) for m in loc.get("ConsumptionMeters") or [] if m]
             meter_data = meters_raw.get(meters[0], {}) if meters else {}
-            periods = [p for p in map(_period, meter_data.get("index_history") or []) if p]
+            # istoricul tuturor contoarelor locului (ex. după înlocuirea contorului),
+            # fără dubluri pe (contor, sfârșit perioadă)
+            seen: set[tuple[str, date]] = set()
+            periods = []
+            for meter in meters:
+                for raw in (meters_raw.get(meter) or {}).get("index_history") or []:
+                    period = _period(raw)
+                    if period and (meter, period.end) not in seen:
+                        seen.add((meter, period.end))
+                        periods.append(period)
             periods.sort(key=lambda p: p.end, reverse=True)
             contract = next(
                 (c for c in contracts if str(c.get("ConsumptionPointCode")) == code),

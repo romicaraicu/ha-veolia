@@ -107,3 +107,24 @@ def test_empty_account(empty) -> None:
     assert empty.last_payment is None
     assert empty.last_invoice is None
     assert empty.paid_recent(TODAY) == []
+
+
+def test_history_merged_across_meters(snap) -> None:
+    acc = snap["accounts"]["10000001"]
+    acc["locations"][0]["ConsumptionMeters"] = ["22AA000001", "OLD0000001"]
+    acc["meters"]["OLD0000001"] = {
+        "consumption_point": "4000000001",
+        "installation": "5000000001",
+        "last_index": None,
+        "index_history": [
+            {"Consumption": 5, "EndDate": "2025-11-28", "Index": "100", "StartDate": "2025-10-29", "Type": "citire"},
+            {"Consumption": 5, "EndDate": "2025-11-28", "Index": "100", "StartDate": "2025-10-29", "Type": "citire"},
+        ],
+    }
+    loc = build_locations(snap)["4000000001"]
+    assert loc.meter == "22AA000001"
+    assert loc.last_index == 419
+    assert [p.end.isoformat() for p in loc.periods] == [
+        "2026-10-28", "2026-09-28", "2025-12-30", "2025-11-28",
+    ]
+    assert loc.yearly_consumption() == {"2026": 27, "2025": 14}

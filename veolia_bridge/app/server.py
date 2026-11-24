@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import hmac
 import logging
 import time
@@ -71,17 +72,33 @@ def create_app(
                 return _error("unauthorized", "Token bridge invalid.", 401)
         return await handler(request)
 
-    async def run(name: str, operation) -> web.Response:
+    inflight: dict[str, asyncio.Future] = {}
+
+    async def guarded(operation) -> Any:
+        # așteptarea la lacăt intră în același buget de timp ca operația,
+        # ca răspunsul să vină mereu înainte de timeout-ul clientului (180 s)
+        async with asyncio.timeout(op_timeout), lock:
+            return await operation()
+
+    async def run(name: str, operation, key: str | None = None) -> web.Response:
         started = time.monotonic()
-        async with lock:
-            try:
-                result = await asyncio.wait_for(operation(), op_timeout)
-            except TimeoutError:
-                _LOGGER.warning("%s: depășit timpul de %.0f s", name, op_timeout)
-                return _error("timeout", f"Operația a durat mai mult de {op_timeout:.0f} s.")
-            except PortalError as err:
-                _LOGGER.warning("%s: eroare %s (%.1f s)", name, err.code, time.monotonic() - started)
-                return _error(err.code, err.message)
+        task = inflight.get(key) if key else None
+        if task is None:
+            task = asyncio.ensure_future(guarded(operation))
+            if key:
+                inflight[key] = task
+                task.add_done_callback(lambda _: inflight.pop(key, None))
+        else:
+            _LOGGER.debug("%s: folosesc rezultatul cererii aflate deja în lucru", name)
+        try:
+            # shield: dacă un client renunță, cererea comună continuă pentru ceilalți
+            result = await asyncio.shield(task)
+        except TimeoutError:
+            _LOGGER.warning("%s: depășit timpul de %.0f s", name, op_timeout)
+            return _error("timeout", f"Operația a durat mai mult de {op_timeout:.0f} s.")
+        except PortalError as err:
+            _LOGGER.warning("%s: eroare %s (%.1f s)", name, err.code, time.monotonic() - started)
+            return _error(err.code, err.message)
         _LOGGER.info("%s: gata în %.1f s", name, time.monotonic() - started)
         return web.json_response(result)
 
@@ -93,7 +110,10 @@ def create_app(
             body = await _read_body(request, {})
         except PortalError as err:
             return _error(err.code, err.message)
-        return await run("snapshot", lambda: portal.snapshot(body["email"], body["password"]))
+        key = hashlib.sha256(f"{body['email']}\0{body['password']}".encode()).hexdigest()
+        return await run(
+            "snapshot", lambda: portal.snapshot(body["email"], body["password"]), key
+        )
 
     async def submit_index(request: web.Request) -> web.Response:
         try:

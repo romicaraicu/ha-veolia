@@ -137,3 +137,34 @@ async def test_password_not_logged(make_client, caplog) -> None:
     client2 = await make_client(FakePortal())
     await client2.post("/snapshot", json=CREDS, headers=AUTH)
     assert "S3cret!" not in caplog.text
+
+
+async def test_concurrent_snapshots_share_one_portal_run(make_client) -> None:
+    portal = FakePortal(delay=0.2)
+    portal.calls = 0
+    original = portal.snapshot
+
+    async def counting(email, password):
+        portal.calls += 1
+        return await original(email, password)
+
+    portal.snapshot = counting
+    client = await make_client(portal)
+    r1, r2 = await asyncio.gather(
+        client.post("/snapshot", json=CREDS, headers=AUTH),
+        client.post("/snapshot", json=CREDS, headers=AUTH),
+    )
+    assert (r1.status, r2.status) == (200, 200)
+    assert portal.calls == 1
+
+
+async def test_lock_wait_counts_toward_timeout(make_client) -> None:
+    portal = FakePortal(delay=0.3)
+    client = await make_client(portal, op_timeout=0.5)
+    body = {**CREDS, "clientCode": "1", "meter": "M", "index": 1}
+    r1, r2 = await asyncio.gather(
+        client.post("/submit-index", json=body, headers=AUTH),
+        client.post("/submit-index", json=body, headers=AUTH),
+    )
+    statuses = sorted([r1.status, r2.status])
+    assert statuses == [200, 504]

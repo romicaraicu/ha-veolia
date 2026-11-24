@@ -3,3 +3,6 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 .superpowers/
+
+# dashboard-uri generate cu tools/genereaza_dashboard.py (conțin codul locului de consum)
+dashboard/veolia_[0-9]*.yaml

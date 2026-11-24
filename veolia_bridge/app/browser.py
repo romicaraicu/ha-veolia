@@ -18,7 +18,7 @@ from playwright.async_api import Error as PlaywrightError
 from playwright.async_api import Page, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeout
 
-from .errors import PortalError
+from .errors import PortalError, classify_call_failure, classify_login_failure
 from .snapshot import Call, build_save_index_body, build_snapshot
 
 _LOGGER = logging.getLogger(__name__)
@@ -119,9 +119,7 @@ class PlaywrightPortal:
                         page, "login-submit", {"email": email, "password": password}
                     )
                     if login.get("success") is not True:
-                        raise PortalError(
-                            "auth", str(login.get("error") or "Autentificare eșuată.")
-                        )
+                        raise classify_login_failure(login)
                     _LOGGER.debug("Autentificare reușită")
 
                     await page.goto(f"{self._base}/sumar", wait_until="domcontentloaded")
@@ -132,11 +130,7 @@ class PlaywrightPortal:
                     async def call(endpoint: str, body: dict | None) -> Any:
                         data = await self._post(page, endpoint, body)
                         if data.get("success") is not True:
-                            if data.get("code") == 401:
-                                raise PortalError("auth", "Sesiunea a expirat.")
-                            raise PortalError(
-                                "portal", f"{endpoint}: {data.get('error') or 'eroare portal'}"
-                            )
+                            raise classify_call_failure(endpoint, data)
                         return data.get("content")
 
                     yield call

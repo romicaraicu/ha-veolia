@@ -9,14 +9,17 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import VeoliaAuthError, VeoliaBridgeClient, VeoliaError
+from .api import VeoliaAuthError, VeoliaBlockedError, VeoliaBridgeClient, VeoliaError
 from .const import CONF_LOCATIONS, CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_HOURS, DOMAIN
 from .parser import LocationData, build_locations
 from .statistics import async_import_statistics
 
 _LOGGER = logging.getLogger(__name__)
+
+ISSUE_WAF_BLOCKED = "waf_blocked"
 
 
 class VeoliaCoordinator(DataUpdateCoordinator[dict[str, LocationData]]):
@@ -46,9 +49,20 @@ class VeoliaCoordinator(DataUpdateCoordinator[dict[str, LocationData]]):
             snapshot = await self.api.get_snapshot()
         except VeoliaAuthError as err:
             raise ConfigEntryAuthFailed(str(err)) from err
+        except VeoliaBlockedError as err:
+            ir.async_create_issue(
+                self.hass,
+                DOMAIN,
+                ISSUE_WAF_BLOCKED,
+                is_fixable=False,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key=ISSUE_WAF_BLOCKED,
+            )
+            raise UpdateFailed(str(err)) from err
         except VeoliaError as err:
             raise UpdateFailed(str(err)) from err
 
+        ir.async_delete_issue(self.hass, DOMAIN, ISSUE_WAF_BLOCKED)
         self.raw = snapshot
         locations = build_locations(snapshot)
         if self.selected_locations:

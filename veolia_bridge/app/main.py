@@ -12,7 +12,7 @@ from aiohttp import web
 
 from .browser import PlaywrightPortal
 from .server import create_app
-from .supervisor import announce, load_or_create_token
+from .supervisor import announce, load_or_create_token, manual_setup_hint
 
 VERSION = "0.1.0"
 PORT = 8099
@@ -39,7 +39,8 @@ def main() -> None:
     async def on_startup(_: web.Application) -> None:
         _LOGGER.info("Veolia Bridge %s - Listening on 0.0.0.0:%s", VERSION, PORT)
         async with aiohttp.ClientSession() as session:
-            await announce(session, token, PORT)
+            if not await announce(session, token, PORT):
+                _LOGGER.warning(manual_setup_hint(token, PORT))
 
     app.on_startup.append(on_startup)
     web.run_app(app, host="0.0.0.0", port=PORT, print=None)

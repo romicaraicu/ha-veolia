@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add-on Veolia Bridge",
+        "description": "Nu am găsit automat add-on-ul Veolia Bridge. Introdu adresa lui (de ex. http://<hostname>:8099) și token-ul afișat în jurnalul add-on-ului la pornire.",
+        "data": { "bridge_url": "Adresa bridge-ului", "bridge_token": "Token bridge" }
+      },
+      "hassio_confirm": {
+        "title": "Veolia VRSI",
+        "description": "Add-on-ul Veolia Bridge rulează. Continui cu adăugarea contului Veolia?"
+      },
+      "credentials": {
+        "title": "Cont Veolia",
+        "description": "Introdu datele de autentificare folosite pe clienti-vrsi.veolia.ro.",
+        "data": { "email": "Email", "password": "Parolă" }
+      },
+      "locations": {
+        "title": "Locuri de consum",
+        "description": "Alege locurile de consum pe care vrei să le monitorizezi.",
+        "data": { "locations": "Locuri de consum", "scan_interval": "Interval de actualizare (ore)" }
+      },
+      "reauth_confirm": {
+        "title": "Reautentificare Veolia",
+        "description": "Parola pentru {email} nu mai este acceptată. Introdu parola nouă.",
+        "data": { "password": "Parolă" }
+      }
+    },
+    "error": {
+      "invalid_auth": "Email sau parolă incorecte.",
+      "waf_blocked": "Portalul Veolia a refuzat browserul automat (protecția AWS WAF). Încearcă din nou mai târziu.",
+      "bridge_auth": "Token-ul add-on-ului Veolia Bridge nu este corect.",
+      "cannot_connect": "Nu mă pot conecta la add-on-ul Veolia Bridge sau la portalul Veolia. Verifică dacă add-on-ul rulează.",
+      "no_locations": "Contul nu are niciun loc de consum asociat.",
+      "unknown": "Eroare neașteptată. Verifică jurnalul (log)."
+    },
+    "abort": {
+      "already_configured": "Acest cont Veolia este deja configurat.",
+      "reauth_successful": "Reautentificare reușită."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Setări Veolia VRSI",
+        "data": { "locations": "Locuri de consum", "scan_interval": "Interval de actualizare (ore)" }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "loc_consum": { "name": "Loc de consum" },
+      "consum_ultima_luna": { "name": "Consum ultima lună" },
+      "consum_an_curent": { "name": "Consum an curent" },
+      "ultimul_index": { "name": "Ultimul index" },
+      "total_de_plata": { "name": "Total de plată" },
+      "facturi_neplatite": { "name": "Facturi neplătite" },
+      "facturi_platite": { "name": "Facturi plătite" },
+      "ultima_factura": { "name": "Ultima factură" },
+      "urmatoarea_scadenta": { "name": "Următoarea scadență" },
+      "ultima_plata": { "name": "Ultima plată" },
+      "perioada_index": { "name": "Perioadă transmitere index" },
+      "perioada_index_inceput": { "name": "Început perioadă index" },
+      "perioada_index_sfarsit": { "name": "Sfârșit perioadă index" }
+    },
+    "binary_sensor": {
+      "perioada_index_activa": { "name": "Transmitere index permisă" },
+      "factura_restanta": { "name": "Factură restantă" }
+    },
+    "button": {
+      "actualizare": { "name": "Actualizare date" }
+    }
+  },
+  "issues": {
+    "waf_blocked": {
+      "title": "Portalul Veolia blochează actualizarea automată",
+      "description": "Add-on-ul Veolia Bridge nu a putut încărca portalul clienti-vrsi.veolia.ro (protecția AWS WAF a refuzat browserul automat sau cere CAPTCHA). Datele nu se mai actualizează. Integrarea nu încearcă să ocolească protecția; verifică dacă portalul merge din browserul tău și încearcă din nou mai târziu cu butonul „Actualizare date”."
+    }
+  },
+  "services": {
+    "trimite_index": {
+      "name": "Transmite index",
+      "description": "Transmite indexul autocitit al unui contor (doar în perioada de transmitere și doar pentru contoare care nu sunt citite de la distanță).",
+      "fields": {
+        "contor": { "name": "Contor", "description": "Seria contorului (de ex. 22AA000001)." },
+        "index": { "name": "Index", "description": "Indexul citit de pe contor (număr întreg, maxim 6 cifre)." }
+      }
+    }
+  }
+}

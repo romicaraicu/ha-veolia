@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Veolia Bridge add-on",
+        "description": "The Veolia Bridge add-on was not discovered automatically. Enter its address (e.g. http://<hostname>:8099) and the token shown in the add-on log at startup.",
+        "data": { "bridge_url": "Bridge address", "bridge_token": "Bridge token" }
+      },
+      "hassio_confirm": {
+        "title": "Veolia VRSI",
+        "description": "The Veolia Bridge add-on is running. Continue adding your Veolia account?"
+      },
+      "credentials": {
+        "title": "Veolia account",
+        "description": "Enter the credentials you use on clienti-vrsi.veolia.ro.",
+        "data": { "email": "Email", "password": "Password" }
+      },
+      "locations": {
+        "title": "Consumption points",
+        "description": "Choose the consumption points to monitor.",
+        "data": { "locations": "Consumption points", "scan_interval": "Update interval (hours)" }
+      },
+      "reauth_confirm": {
+        "title": "Veolia re-authentication",
+        "description": "The password for {email} is no longer accepted. Enter the new password.",
+        "data": { "password": "Password" }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid email or password.",
+      "waf_blocked": "The Veolia portal refused the automated browser (AWS WAF protection). Try again later.",
+      "bridge_auth": "The Veolia Bridge add-on token is not correct.",
+      "cannot_connect": "Cannot connect to the Veolia Bridge add-on or the Veolia portal. Check that the add-on is running.",
+      "no_locations": "The account has no consumption points.",
+      "unknown": "Unexpected error. Check the log."
+    },
+    "abort": {
+      "already_configured": "This Veolia account is already configured.",
+      "reauth_successful": "Re-authentication successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Veolia VRSI settings",
+        "data": { "locations": "Consumption points", "scan_interval": "Update interval (hours)" }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "loc_consum": { "name": "Consumption point" },
+      "consum_ultima_luna": { "name": "Last month consumption" },
+      "consum_an_curent": { "name": "Current year consumption" },
+      "ultimul_index": { "name": "Last meter reading" },
+      "total_de_plata": { "name": "Amount due" },
+      "facturi_neplatite": { "name": "Unpaid invoices" },
+      "facturi_platite": { "name": "Paid invoices" },
+      "ultima_factura": { "name": "Last invoice" },
+      "urmatoarea_scadenta": { "name": "Next due date" },
+      "ultima_plata": { "name": "Last payment" },
+      "perioada_index": { "name": "Meter reading window" },
+      "perioada_index_inceput": { "name": "Meter reading window start" },
+      "perioada_index_sfarsit": { "name": "Meter reading window end" }
+    },
+    "binary_sensor": {
+      "perioada_index_activa": { "name": "Meter reading allowed" },
+      "factura_restanta": { "name": "Overdue invoice" }
+    },
+    "button": {
+      "actualizare": { "name": "Refresh data" }
+    }
+  },
+  "issues": {
+    "waf_blocked": {
+      "title": "The Veolia portal blocks automatic updates",
+      "description": "The Veolia Bridge add-on could not load clienti-vrsi.veolia.ro (the AWS WAF protection refused the automated browser or asked for a CAPTCHA). Data is no longer updated. The integration does not try to bypass the protection; check that the portal works in your browser and try again later with the \"Refresh data\" button."
+    }
+  },
+  "services": {
+    "trimite_index": {
+      "name": "Submit meter reading",
+      "description": "Submits a self-read meter index (only during the reading window and only for meters that are not read remotely).",
+      "fields": {
+        "contor": { "name": "Meter", "description": "Meter serial number (e.g. 22AA000001)." },
+        "index": { "name": "Index", "description": "Meter reading (integer, up to 6 digits)." }
+      }
+    }
+  }
+}

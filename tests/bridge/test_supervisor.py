@@ -63,3 +63,11 @@ async def test_announce_failure_does_not_raise(aiohttp_server, monkeypatch) -> N
     async with aiohttp.ClientSession() as session:
         ok = await announce(session, "tok", 8099, base_url=str(server.make_url("")).rstrip("/"))
     assert ok is False
+
+
+def test_manual_setup_hint_contains_token_and_port() -> None:
+    from veolia_bridge.app.supervisor import manual_setup_hint
+
+    hint = manual_setup_hint("tok123", 8099)
+    assert "tok123" in hint
+    assert "8099" in hint

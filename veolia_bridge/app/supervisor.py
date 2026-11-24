@@ -30,6 +30,14 @@ def load_or_create_token(path: Path) -> str:
     return token
 
 
+def manual_setup_hint(token: str, port: int) -> str:
+    """Mesajul din jurnal pentru configurarea manuală a integrării."""
+    return (
+        "Descoperirea automată nu a reușit. În integrarea Veolia VRSI introdu "
+        f"adresa http://<hostname-ul add-on-ului>:{port} și token-ul: {token}"
+    )
+
+
 async def announce(
     session: aiohttp.ClientSession,
     token: str,

@@ -1,0 +1,15 @@
+trimite_index:
+  fields:
+    contor:
+      required: true
+      example: "22AA000001"
+      selector:
+        text:
+    index:
+      required: true
+      example: 1234
+      selector:
+        number:
+          min: 0
+          max: 999999
+          mode: box

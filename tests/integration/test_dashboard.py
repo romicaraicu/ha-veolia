@@ -11,6 +11,7 @@ from homeassistant.helpers.template import Template
 
 from custom_components.veolia_vrsi.statistics import (
     billed_statistic_id,
+    cost_statistic_id,
     price_statistic_id,
     statistic_id,
 )
@@ -59,6 +60,7 @@ async def test_dashboard_entities_exist(hass: HomeAssistant, mock_bridge) -> Non
         price_statistic_id(CODE),
         statistic_id(CODE),
         billed_statistic_id(CODE),
+        cost_statistic_id(CODE),
     ]
     for content in markdown:
         rendered = Template(content, hass).async_render(parse_result=False)
@@ -66,6 +68,11 @@ async def test_dashboard_entities_exist(hass: HomeAssistant, mock_bridge) -> Non
     meters = next(m for m in markdown if "Contoare de pe ultima factură" in m)
     rendered = Template(meters, hass).async_render(parse_result=False)
     assert "22AA000001" in rendered and "I23AA000009" in rendered
+    yearly = next(m for m in markdown if "Facturi pe an" in m)
+    rendered = Template(yearly, hass).async_render(parse_result=False)
+    assert "| 2026 | 484.28 | 27.89 | 17.36 | 2 |" in rendered
+    # tabelul markdown nu are voie să aibă rânduri goale între antet și rânduri
+    assert "|---|---:|---:|---:|---:|\n| 2026 |" in rendered
 
 
 def test_generator_replaces_placeholder(tmp_path) -> None:

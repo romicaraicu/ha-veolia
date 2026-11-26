@@ -109,6 +109,8 @@ async def test_price_sensors(hass: HomeAssistant, mock_bridge) -> None:
     assert price.state == "17.36"
     assert price.attributes["factura"] == "VRS000000003"
     assert [h["luna"] for h in price.attributes["istoric"]] == ["2026-10", "2026-09"]
+    assert price.attributes["pret_pe_an"] == {
+        "2026": {"pret_mc": 17.36, "total": 484.28, "m3": 27.89, "facturi": 2}}
     assert st("cost_efectiv_mc").state == "23.5"
     assert st("apa_facturata").state == "14.89"
     assert st("apa_facturata").attributes["unit_of_measurement"] == "m³"

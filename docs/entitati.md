@@ -28,7 +28,7 @@ Add-on-ul descarcă fiecare factură o singură dată (câte cel mult 6 la o act
 |---|---|---|---|
 | `tarif_apa` | Tarif apă | lei/m³, fără TVA, de pe ultima factură | `factura`, `luna`, `de_la`, `pana_la`, `istoric` |
 | `tarif_canalizare` | Tarif canalizare | lei/m³, fără TVA | la fel |
-| `pret_mc_facturat` | Preț pe m³ facturat | total factură (cu TVA, apă + canalizare) / m³ de apă facturați | la fel; `istoric` are prețul pe fiecare lună |
+| `pret_mc_facturat` | Preț pe m³ facturat | total factură (cu TVA, apă + canalizare) / m³ de apă facturați | la fel; `istoric` are prețul pe fiecare lună; `pret_pe_an` are, pe fiecare an, `total` (lei), `m3`, `pret_mc` (ponderat: total / m³) și `facturi` |
 | `cost_efectiv_mc` | Cost efectiv pe m³ | total factură / consumul contoarelor tale (include partea din condominiu) | la fel |
 | `apa_facturata` | Apă facturată | m³ de apă de pe factură | la fel |
 | `diferenta_facturata` | Diferență facturată față de contor | m³ facturați peste consumul contoarelor tale | la fel |
@@ -72,6 +72,7 @@ platita_la: null
 | `veolia_vrsi:contor_<serie>` | m³ | consumul lunar al fiecărui contor de pe facturi |
 | `veolia_vrsi:apa_facturata_<cod_loc_consum>` | m³ | apa facturată pe lună |
 | `veolia_vrsi:pret_mc_<cod_loc_consum>` | lei/m³ | prețul pe m³ facturat, pe lună (medie) |
+| `veolia_vrsi:cost_facturi_<cod_loc_consum>` | lei | totalul facturilor (cu TVA), pe lună; cu `period: year` dă costul pe fiecare an |
 
 Pentru m³ folosește cardul **Statistics graph** cu `stat_types: [change]` și `period: month` sau `period: year`; pentru preț, `stat_types: [mean]`.
 

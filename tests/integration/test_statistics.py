@@ -111,6 +111,7 @@ async def test_import_anchors_on_stored_sum(hass: HomeAssistant) -> None:
 def test_invoice_statistic_ids() -> None:
     from custom_components.veolia_vrsi.statistics import (
         billed_statistic_id,
+        cost_statistic_id,
         meter_statistic_id,
         price_statistic_id,
     )
@@ -118,6 +119,7 @@ def test_invoice_statistic_ids() -> None:
     assert meter_statistic_id("I23AA000009") == "veolia_vrsi:contor_i23aa000009"
     assert billed_statistic_id(CODE) == "veolia_vrsi:apa_facturata_4000000001"
     assert price_statistic_id(CODE) == "veolia_vrsi:pret_mc_4000000001"
+    assert cost_statistic_id(CODE) == "veolia_vrsi:cost_facturi_4000000001"
 
 
 async def test_invoice_statistics_imported(hass: HomeAssistant) -> None:
@@ -135,6 +137,7 @@ async def test_invoice_statistics_imported(hass: HomeAssistant) -> None:
         "veolia_vrsi:contor_i23aa000009",
         "veolia_vrsi:apa_facturata_4000000001",
         "veolia_vrsi:pret_mc_4000000001",
+        "veolia_vrsi:cost_facturi_4000000001",
     }
     meta, stats = by_id["veolia_vrsi:contor_i23aa000009"]
     assert meta["has_sum"] is True
@@ -150,4 +153,11 @@ async def test_invoice_statistics_imported(hass: HomeAssistant) -> None:
     assert meta["mean_type"] is StatisticMeanType.ARITHMETIC
     assert [(s["start"].strftime("%Y-%m"), s["mean"], s["min"], s["max"]) for s in stats] == [
         ("2026-09", 17.36, 17.36, 17.36), ("2026-10", 17.36, 17.36, 17.36),
+    ]
+    meta, stats = by_id["veolia_vrsi:cost_facturi_4000000001"]
+    assert meta["has_sum"] is True
+    assert meta["unit_of_measurement"] == "RON"
+    assert meta["unit_class"] is None
+    assert [(s["start"].strftime("%Y-%m"), s["state"], s["sum"]) for s in stats] == [
+        ("2026-09", 225.74, 225.74), ("2026-10", 258.54, 484.28),
     ]

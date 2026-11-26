@@ -203,7 +203,11 @@ SENSORS: tuple[VeoliaSensorDescription, ...] = (
         "tarif_canalizare",
         lambda d, t: d.latest_invoice_detail.tariff("canalizare") if d.latest_invoice_detail else None,
     ),
-    _price("pret_mc_facturat", lambda d, t: _latest(d, "price_per_m3")),
+    _price(
+        "pret_mc_facturat",
+        lambda d, t: _latest(d, "price_per_m3"),
+        lambda d, t: {**_invoice_attrs(d, t), "pret_pe_an": d.price_yearly()},
+    ),
     _price("cost_efectiv_mc", lambda d, t: _latest(d, "effective_cost_per_m3")),
     _water("apa_facturata", lambda d, t: _latest(d, "water_billed"), _invoice_attrs),
     VeoliaSensorDescription(

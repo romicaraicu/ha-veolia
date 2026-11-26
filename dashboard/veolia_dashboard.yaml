@@ -213,6 +213,31 @@ views:
             chart_type: bar
             period: month
             days_to_show: 365
+          - type: statistics-graph
+            title: Cost facturi pe an (lei, cu TVA)
+            entities:
+              - veolia_vrsi:cost_facturi_4000000000
+            stat_types:
+              - change
+            chart_type: bar
+            period: year
+            days_to_show: 3650
+            hide_legend: true
+          - type: markdown
+            content: |-
+              **Facturi pe an**
+              {% set ani = state_attr('sensor.veolia_vrsi_4000000000_pret_mc_facturat', 'pret_pe_an') or {} %}
+              {% if ani %}
+              | An | Total (lei) | Apă facturată (m³) | Preț mediu (lei/m³) | Facturi |
+              |---|---:|---:|---:|---:|
+              {%- for an, v in ani.items() %}
+              | {{ an }} | {{ v.total }} | {{ v.m3 }} | {{ v.pret_mc }} | {{ v.facturi }} |
+              {%- endfor %}
+
+              Prețul mediu e ponderat: totalul facturilor din an împărțit la m³ facturați.
+              {% else %}
+              Totalurile apar după ce add-on-ul citește primele facturi.
+              {% endif %}
           - type: markdown
             content: |-
               **Contoare de pe ultima factură**

@@ -29,7 +29,8 @@ from .parser import LocationData
 
 _LOGGER = logging.getLogger(__name__)
 
-PRICE_UNIT = f"RON/{UnitOfVolume.CUBIC_METERS}"
+COST_UNIT = "RON"
+PRICE_UNIT = f"{COST_UNIT}/{UnitOfVolume.CUBIC_METERS}"
 
 
 def statistic_id(code: str) -> str:
@@ -46,6 +47,10 @@ def billed_statistic_id(code: str) -> str:
 
 def price_statistic_id(code: str) -> str:
     return f"{DOMAIN}:pret_mc_{code}"
+
+
+def cost_statistic_id(code: str) -> str:
+    return f"{DOMAIN}:cost_facturi_{code}"
 
 
 def _month_start(month: str, tz: tzinfo) -> datetime:
@@ -94,7 +99,13 @@ async def _async_stored_sum_before(hass: HomeAssistant, stat_id: str, start: dat
 
 
 async def _async_import_sum(
-    hass: HomeAssistant, stat_id: str, name: str, monthly: dict[str, float], tz: tzinfo
+    hass: HomeAssistant,
+    stat_id: str,
+    name: str,
+    monthly: dict[str, float],
+    tz: tzinfo,
+    unit: str = UnitOfVolume.CUBIC_METERS,
+    unit_class: str | None = "volume",
 ) -> None:
     rows = _sum_rows(monthly, tz)
     if not rows:
@@ -108,8 +119,8 @@ async def _async_import_sum(
         name=name,
         source=DOMAIN,
         statistic_id=stat_id,
-        unit_class="volume",
-        unit_of_measurement=UnitOfVolume.CUBIC_METERS,
+        unit_class=unit_class,
+        unit_of_measurement=unit,
     )
     async_add_external_statistics(
         hass,
@@ -165,5 +176,14 @@ async def async_import_statistics(
         )
         _import_price(
             hass, price_statistic_id(code), f"Preț pe m³ {address}", location.price_monthly(), tz
+        )
+        await _async_import_sum(
+            hass,
+            cost_statistic_id(code),
+            f"Cost facturi {address}",
+            location.cost_monthly(),
+            tz,
+            unit=COST_UNIT,
+            unit_class=None,
         )
         _LOGGER.debug("Statistici importate pentru %s", code)

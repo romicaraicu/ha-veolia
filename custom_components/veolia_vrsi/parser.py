@@ -371,6 +371,38 @@ class LocationData:
                 prices[detail.month] = detail.price_per_m3
         return dict(sorted(prices.items()))
 
+    def cost_monthly(self) -> dict[str, float]:
+        """Totalul facturilor (lei, cu TVA) pe lună."""
+        totals: dict[str, float] = {}
+        for detail in reversed(self.invoice_details):
+            if detail.total is not None and detail.month:
+                totals[detail.month] = round(totals.get(detail.month, 0.0) + detail.total, 2)
+        return dict(sorted(totals.items()))
+
+    def price_yearly(self) -> dict[str, dict[str, Any]]:
+        """Prețul pe m³ pe fiecare an (cel mai nou primul).
+
+        Ponderat cu apa facturată: totalul facturilor din an / m³ de apă facturați,
+        nu media simplă a prețurilor lunare.
+        """
+        sums: dict[str, list[float]] = {}
+        for detail in self.invoice_details:
+            if not detail.total or not detail.water_billed or not detail.month:
+                continue
+            acc = sums.setdefault(detail.month[:4], [0.0, 0.0, 0])
+            acc[0] += detail.total
+            acc[1] += detail.water_billed
+            acc[2] += 1
+        return {
+            year: {
+                "pret_mc": round(total / m3, 2),
+                "total": round(total, 2),
+                "m3": round(m3, 3),
+                "facturi": int(count),
+            }
+            for year, (total, m3, count) in sorted(sums.items(), reverse=True)
+        }
+
     # ---------------------------------------------------------- facturi
     def next_due_date(self, today: date) -> date | None:
         dues = [i.due for i in self.unpaid if i.due and i.balance > AMOUNT_EPSILON]

@@ -30,6 +30,7 @@ Dacă ai contract de apă cu Veolia România Soluții Integrate și folosești H
 | **Ce date are locul de consum?** | `Loc de consum`: adresă, cod client, contract, contor |
 | **Cât plătesc pe m³?** | `Preț pe m³ facturat`, `Cost efectiv pe m³`, `Tarif apă`, `Tarif canalizare` (din PDF-ul facturii) |
 | **Cât arată fiecare contor?** | câte un `Consum contor …` și `Index contor …` pentru fiecare contor de pe factură (al tău, condominiu și altele) |
+| **Cât am plătit pe apă în fiecare an?** | graficul *Cost facturi pe an* și tabelul *Facturi pe an* din dashboard (total, m³, preț mediu pe m³) |
 | **Plătesc mai multă apă decât arată contorul meu?** | `Apă facturată` și `Diferență facturată față de contor` |
 
 Pe lângă senzori ai:

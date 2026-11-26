@@ -154,6 +154,7 @@ def test_meter_readings_are_dynamic(loc) -> None:
     assert loc.meter_monthly("I23AA000009") == {"2026-09": 100.0, "2026-10": 102.0}
     assert loc.billed_monthly() == {"2026-09": 13.0, "2026-10": 14.89}
     assert loc.price_monthly() == {"2026-09": 17.36, "2026-10": 17.36}
+    assert loc.cost_monthly() == {"2026-09": 225.74, "2026-10": 258.54}
 
 
 def test_invoice_assigned_by_meter_when_account_has_several_locations(snap) -> None:
@@ -178,3 +179,22 @@ def test_location_without_invoice_details(empty) -> None:
     assert empty.latest_invoice_detail is None
     assert empty.meter_readings() == {}
     assert empty.price_monthly() == {}
+
+
+def test_price_yearly_is_weighted_by_billed_water(snap) -> None:
+    details = snap["accounts"]["10000001"]["invoice_details"]
+    old = json.loads(json.dumps(details["VRS000000002"]))
+    old.update(invoice_number="VRS000000001", period_start="2025-11-29",
+               period_end="2025-12-28", total=100.0)
+    old["services"]["apa"]["quantity"] = 10.0
+    details["VRS000000001"] = old
+    loc = build_locations(snap)["4000000001"]
+    yearly = loc.price_yearly()
+    assert list(yearly) == ["2026", "2025"]
+    # (258,54 + 225,74) / (14,89 + 13,00): ponderat cu apa facturată
+    assert yearly["2026"] == {"pret_mc": 17.36, "total": 484.28, "m3": 27.89, "facturi": 2}
+    assert yearly["2025"] == {"pret_mc": 10.0, "total": 100.0, "m3": 10.0, "facturi": 1}
+
+
+def test_price_yearly_empty(empty) -> None:
+    assert empty.price_yearly() == {}
